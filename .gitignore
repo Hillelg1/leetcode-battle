@@ -19,6 +19,17 @@ target/
 *.iml
 *.ipr
 
+# Environment Variables
+*.env
+
+# Node.js (React/Vite Frontend)
+client/node_modules/
+client/dist/
+client/build/
+
+# macOS
+.DS_Store
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
