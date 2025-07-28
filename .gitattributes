@@ -1,0 +1,6 @@
+/mvnw text eol=lf
+
+# Handle line endings
+* text=auto
+*.cmd text eol=crlf
+*.sh text eol=lf
