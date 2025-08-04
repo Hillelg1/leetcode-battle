@@ -5,14 +5,17 @@ import BattlePage from "./pages/Battlepage/index";
 import Leaderboard from "./pages/Leaderboard/index";
 import Login from "./pages/Login/index";
 import User from "./pages/CreateUser/index";
+import Layout from "./Components/Layout"
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/battle" element={<BattlePage />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route element = {<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/battle" element={<BattlePage />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/createUser" element={<User />} />
       </Routes>

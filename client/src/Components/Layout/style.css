@@ -1,0 +1,24 @@
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  color: white;
+}
+
+.visible{
+    background-color: white;
+    .binaryTree{
+        background-color: black;
+    }
+}
+
+.navBar {
+  width: 200px;
+  padding: 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
+}
