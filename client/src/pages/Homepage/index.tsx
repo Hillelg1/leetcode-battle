@@ -3,14 +3,24 @@ import { useState, useEffect } from "react";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!loggedIn) {
+    // Check if user is stored in localStorage
+    const user = localStorage.getItem("user");
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn === false) {
       navigate("/login");
     }
   }, [loggedIn, navigate]);
-
+  if (loggedIn === null) return null;
   return (
     <div>
       <h1>Home Page</h1>
