@@ -18,3 +18,12 @@ export async function loginUser(username: String, password: string) {
   if (!res.ok) throw new Error('failed to login user');
     return res.json();
 }
+
+export async function fetchQuestion(){
+  const res = await fetch('/api/leetcode/question',{
+    method: 'GET',
+    headers: {'Content-type': 'application/json'},
+  });
+  if(!res.ok)throw new Error("couldnt get question");
+    return res.text();
+}

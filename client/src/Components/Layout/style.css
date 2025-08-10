@@ -9,13 +9,20 @@
     .binaryTree{
         background-color: black;
     }
+    transform: translateX(0);
 }
 
 .navBar {
   width: 200px;
+  background: #f0f0f0;
   padding: 1rem;
   min-height: 100vh;
   box-sizing: border-box;
+  position: relative;
+  /* Start hidden to the left */
+  transition: transform 0.3s ease;
+  z-index: 100;
+
 }
 
 main {
