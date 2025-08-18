@@ -1,0 +1,12 @@
+.createTestcasesContainer{
+    width: 200px; /* Set the width */
+        height: 150px; /* Set the height */
+        border: 2px solid #f8f7f7; /* Add a solid border */
+        background-color: black; /* Light gray background */
+        padding: 20px; /* Add padding inside the box */
+        margin: 10px; /* Add margin around the box */
+        border-radius: 8px; /* Slightly rounded corners */
+        display: flex; /* Optional: For centering content */
+        justify-content: center; /* Optional: For centering content horizontally */
+        align-items: center; /* Optional: For centering content vertically */
+}

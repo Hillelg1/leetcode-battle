@@ -45,7 +45,7 @@ export default function Layout() {
             </li>
             {admin && 
             <li className="admin">
-                <button onClick={() => navigate("/admin")}>
+                <button onClick={() => window.open("http://localhost:8080/swagger-ui.html", "_blank")}>
                   Admin
                 </button>
             </li>

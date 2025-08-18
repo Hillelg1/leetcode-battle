@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { createTestCases } from "../../api";
+import "./style.css"
 
 export default function Admin(){
     const [input, setInput] = useState("");
@@ -16,7 +17,8 @@ export default function Admin(){
         }
     }
     return (
-        <form className="createQuestions" onSubmit={handleSubmit} >
+        <div className="createTestcasesContainer">
+        <form onSubmit={handleSubmit} >
            <label>
           Question ID:
           <input
@@ -48,5 +50,6 @@ export default function Admin(){
             Submit
         </button>
         </form>
+        </div>
     )
 }
