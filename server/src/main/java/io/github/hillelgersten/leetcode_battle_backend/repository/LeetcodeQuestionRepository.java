@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface LeetcodeQuestionRepository extends JpaRepository<LeetcodeQuestions, Long> {
     Optional<LeetcodeQuestions> findByTitle(String title);
+
+    Optional<LeetcodeQuestions> findById(Long id);
 }

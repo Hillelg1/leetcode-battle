@@ -2,6 +2,8 @@ package io.github.hillelgersten.leetcode_battle_backend.controller;
 
 import io.github.hillelgersten.leetcode_battle_backend.model.User;
 import io.github.hillelgersten.leetcode_battle_backend.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,10 +17,15 @@ public class UserController{
         this.repo = repo;
     }
 
-    @PostMapping("/createUser")
-    public User createUser(@RequestBody User user) {
-        System.out.println("creating user");
-        return repo.save(user);
+    @PostMapping("/user")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        if (repo.findByUsername(user.getUsername()).isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Username already exists");
+        }
+        User savedUser = repo.save(user);
+        return ResponseEntity.ok(savedUser);
     }
 
     @GetMapping

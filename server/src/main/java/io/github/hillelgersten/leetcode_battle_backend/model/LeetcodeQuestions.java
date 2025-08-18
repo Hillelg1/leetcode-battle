@@ -2,6 +2,9 @@ package io.github.hillelgersten.leetcode_battle_backend.model;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class LeetcodeQuestions {
     @NotNull
@@ -17,8 +20,9 @@ public class LeetcodeQuestions {
     private String example;
     @Column(columnDefinition="TEXT")
     private String starterCode;
-    @Column(columnDefinition="TEXT")
-    private String testCases;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestCases> testCases = new ArrayList<>();
 
     public Long getId(){return id; }
     public void setId(Long id){this.id = id; }
@@ -38,6 +42,13 @@ public class LeetcodeQuestions {
     public String getStarterCode() { return starterCode; }
     public void setStarterCode(String starterCode) { this.starterCode = starterCode; }
 
-    public String getTestCases() { return testCases; }
-    public void setTestCases(String testCases) { this.testCases = testCases; }
+    public void addTestCase(TestCases testCase) {
+        testCases.add(testCase);
+        testCase.setQuestion(this);  // sync both sides
+    }
+
+    public void removeTestCase(TestCases testCase) {
+        testCases.remove(testCase);
+        testCase.setQuestion(null);  // break the link
+    }
 }
