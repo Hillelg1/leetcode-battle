@@ -1,12 +1,23 @@
-export async function createUser(username: String, password: string) {
-  const res = await fetch('/api/users/createUser', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-  });
+export async function createUser(username: string, password: string) {
+  try {
+    const res = await fetch('/api/users/user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
 
-  if (!res.ok) throw new Error('Failed to create user');
-  return res.json();
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Backend returned an error (e.g., username exists)
+      throw new Error(data.message || 'Failed to create user');
+    }
+
+    return data; // success, return the created user
+  } catch (err: any) {
+    console.error('Error creating user:', err);
+    throw err; // rethrow so calling code can handle it
+  }
 }
 
 export async function loginUser(username: String, password: string) {
@@ -26,4 +37,18 @@ export async function fetchQuestion(){
   });
   if(!res.ok)throw new Error("couldnt get question");
     return res.json();
+}
+
+export async function createTestCases(questionId: number,input: String, output: String){
+  try{
+    const res = await fetch('api/testcases',{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({questionId, input, output})
+    })
+    return res.json();
+  }
+  catch (err){
+    alert(err)
+  }
 }

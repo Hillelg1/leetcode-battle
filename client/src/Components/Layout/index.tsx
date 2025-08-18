@@ -1,11 +1,20 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import "./style.css";
 import { TbBinaryTree } from "react-icons/tb";
+import { useState, useEffect } from "react";
 
 export default function Layout() {
-
   const navigate = useNavigate();
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+      // Check if user is stored in localStorage
+      const user = localStorage.getItem("user");
+      if (user) {
+        const userObj = JSON.parse(user);
+        setAdmin(userObj.admin);
+      } 
+    }, []);
+
   return (
     <div className="layout-container">
       <aside className={`navBar visible` } >
@@ -34,6 +43,13 @@ export default function Layout() {
                 Logout
               </button>
             </li>
+            {admin && 
+            <li className="admin">
+                <button onClick={() => navigate("/admin")}>
+                  Admin
+                </button>
+            </li>
+          } 
           </ul>
       </aside>
       <main>

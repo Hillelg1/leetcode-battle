@@ -6,7 +6,7 @@ import "./style.css"
 export default function BattlePage() {
   const [starterText,setStarterText] = useState("default");
   const [description,setDescription] = useState("default");
-  const [example, setExample] = useState("default")
+  const [example, setExample] = useState("default");
    useEffect(() => {
     const getQuestion = async() => {
     try{
