@@ -1,31 +1,36 @@
 .layout-container {
   display: flex;
+  flex-direction: column;  /* stack nav + main vertically */
   min-height: 100vh;
   color: white;
 }
 
-.visible{
-    background-color: white;
-    .binaryTree{
-        background-color: black;
-    }
-    transform: translateX(0);
+.navBar {
+  width: 100%;            /* full width */
+  height: 60px;           /* fixed height */
+  background: #f0f0f0;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  display: flex;          /* flex container for nav items */
+  align-items: center;    /* vertically center */
+  position: sticky;       /* stick to top on scroll */
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: translateX(0); /* remove any sidebar translate */
 }
 
-.navBar {
-  width: 200px;
-  background: #f0f0f0;
-  padding: 1rem;
-  min-height: 100vh;
-  box-sizing: border-box;
-  position: relative;
-  /* Start hidden to the left */
-  transition: transform 0.3s ease;
-  z-index: 100;
 
+
+.binaryTree{
+  background-color: black;
 }
 
 main {
   flex: 1;
   padding: 2rem;
+}
+.menuBar li{
+ float: left;
+ margin-left: 10px;
 }

@@ -25,5 +25,5 @@ export async function fetchQuestion(){
     headers: {'Content-type': 'application/json'},
   });
   if(!res.ok)throw new Error("couldnt get question");
-    return res.text();
+    return res.json();
 }

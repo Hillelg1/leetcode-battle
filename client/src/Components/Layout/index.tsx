@@ -4,28 +4,27 @@ import "./style.css";
 import { TbBinaryTree } from "react-icons/tb";
 
 export default function Layout() {
-  const [visible, setVisible] = useState(false);
+
   const navigate = useNavigate();
   return (
     <div className="layout-container">
-      <aside className={`navBar ${visible ? 'visible':''}` } >
+      <aside className={`navBar visible` } >
         <h2>
-          <TbBinaryTree onClick={() => setVisible(!visible)} className = 'binaryTree'/>
+          <TbBinaryTree className = 'binaryTree'/>
         </h2>
-        {visible && (
-          <ul>
-            <li>
+          <ul className="menuBar">
+            <li className="home">
               <button onClick={() => navigate("/")}>Home</button>
             </li>
-            <li>
+            <li className="battle">
               <button onClick={() => navigate("/battle")}>Battle</button>
             </li>
-            <li>
+            <li className="leaderboard">
               <button onClick={() => navigate("/leaderboard")}>
                 Leaderboard
               </button>
             </li>
-            <li>
+            <li className="logout">
               <button
                 onClick={() => {
                   localStorage.removeItem("user");
@@ -36,7 +35,6 @@ export default function Layout() {
               </button>
             </li>
           </ul>
-        )}
       </aside>
       <main>
         <Outlet />

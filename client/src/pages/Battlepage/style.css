@@ -1,0 +1,15 @@
+.battlepage{
+    display: flex;
+}
+.editor {
+  width: 50%;
+  height: 400px;
+  box-sizing: border-box;
+}
+
+.description {
+  background-color: gray;
+  border: 1px solid #aaa;
+  width: 50%;
+  color: black;
+}
