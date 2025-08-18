@@ -1,6 +1,6 @@
 package io.github.hillelgersten.leetcode_battle_backend.model;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 public class LeetcodeQuestions {
