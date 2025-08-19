@@ -52,3 +52,18 @@ export async function createTestCases(questionId: number,input: String, output: 
     alert(err)
   }
 }
+
+export async function runCode(questionId: number, userCode: String){
+  console.log(userCode);  
+  try{
+    const res = await fetch('api/code/submit',{
+      method: 'POST',
+      headers: {'Content-type': 'application/json'},
+      body: JSON.stringify({questionId, userCode})
+    });
+    return res.json();
+  }
+  catch(err){
+    alert(err)
+  }
+}
