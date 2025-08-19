@@ -19,7 +19,7 @@ public class UserController{
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        if (repo.findByUsername(user.getUsername()).isPresent()) {
+        if (repo.findByUsername(user.getUsername()).isPresent() || repo.findByUsername(user.getUsername().toLowerCase()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Username already exists");

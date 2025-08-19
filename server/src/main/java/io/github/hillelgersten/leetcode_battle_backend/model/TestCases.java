@@ -1,8 +1,11 @@
 package io.github.hillelgersten.leetcode_battle_backend.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TestCases {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -10,6 +13,7 @@ public class TestCases {
 
     @ManyToOne(fetch = FetchType.LAZY) // many test cases belong to one question
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonBackReference
     private LeetcodeQuestions question;
 
     @Column(columnDefinition = "TEXT", nullable = false)

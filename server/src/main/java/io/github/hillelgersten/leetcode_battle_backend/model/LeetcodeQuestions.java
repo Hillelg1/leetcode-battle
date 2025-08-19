@@ -1,4 +1,6 @@
 package io.github.hillelgersten.leetcode_battle_backend.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -6,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LeetcodeQuestions {
     @NotNull
     @Id
@@ -22,6 +25,7 @@ public class LeetcodeQuestions {
     private String starterCode;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<TestCases> testCases = new ArrayList<>();
 
     public Long getId(){return id; }

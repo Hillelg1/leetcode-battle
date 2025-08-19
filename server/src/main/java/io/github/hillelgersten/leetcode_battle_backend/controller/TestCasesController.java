@@ -8,6 +8,7 @@ import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuesti
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/testcases")
@@ -40,7 +41,7 @@ public class TestCasesController {
         testCase.setQuestion(question);
         testCase.setInput(dto.getInput());
         testCase.setOutput(dto.getOutput());
-
+        question.addTestCase(testCase);
         // save to DB
         return testCaseRepo.save(testCase);
     }
@@ -48,6 +49,16 @@ public class TestCasesController {
     // DELETE a test case
     @DeleteMapping("/{id}")
     public void deleteTestCase(@PathVariable Long id) {
-        testCaseRepo.deleteById(id);
+        Optional<TestCases> testCaseOpt = testCaseRepo.findById(id);
+
+        if (testCaseOpt.isPresent()) {
+            TestCases testCase = testCaseOpt.get();
+
+            if (testCase.getQuestion() != null) {
+                testCase.getQuestion().removeTestCase(testCase);
+            }
+
+            testCaseRepo.delete(testCase);
+        }
     }
 }

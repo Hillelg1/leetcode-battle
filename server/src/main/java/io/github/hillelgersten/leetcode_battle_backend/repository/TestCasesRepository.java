@@ -9,7 +9,7 @@ import java.util.List;
 public interface TestCasesRepository extends JpaRepository<TestCases, Long> {
     // find all test cases for a given question
     List<TestCases> findByQuestion(LeetcodeQuestions question);
-
     // or by question id directly
     List<TestCases> findByQuestionId(Long questionId);
+
 }
