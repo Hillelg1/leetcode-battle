@@ -42,4 +42,7 @@ public class TestCases {
     public void setOutput(String output){
         this.output = output;
     }
+
+    public Long getId(){return this.id;}
+    public void setId(Long id){this.id=id;}
 }

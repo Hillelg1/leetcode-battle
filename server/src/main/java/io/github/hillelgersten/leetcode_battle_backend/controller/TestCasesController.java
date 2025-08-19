@@ -1,5 +1,7 @@
 package io.github.hillelgersten.leetcode_battle_backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hillelgersten.leetcode_battle_backend.dto.TestCasesDto;
 import io.github.hillelgersten.leetcode_battle_backend.model.TestCases;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
@@ -31,16 +33,17 @@ public class TestCasesController {
 
     // CREATE a new test case
     @PostMapping
-    public TestCases addTestCase(@RequestBody TestCasesDto dto) {
+    public TestCases addTestCase(@RequestBody TestCasesDto dto) throws JsonProcessingException {
         // fetch the related question
         LeetcodeQuestions question = questionRepo.findById(dto.getQuestionId())
                 .orElseThrow(() -> new RuntimeException("Question not found"));
 
         // create a new test case
+        ObjectMapper mapper = new ObjectMapper();
         TestCases testCase = new TestCases();
         testCase.setQuestion(question);
-        testCase.setInput(dto.getInput());
-        testCase.setOutput(dto.getOutput());
+        testCase.setInput(mapper.writeValueAsString(dto.getInput()));
+        testCase.setOutput(mapper.writeValueAsString(dto.getOutput()));
         question.addTestCase(testCase);
         // save to DB
         return testCaseRepo.save(testCase);

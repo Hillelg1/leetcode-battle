@@ -1,0 +1,18 @@
+# Use lightweight Node.js image
+FROM node:18-alpine
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy in the necessary files (these will be mounted dynamically)
+# Note: In production, these will come from the temp folder mounted at runtime
+# COPY userCode.js ./userCode.js
+# COPY testcases.json ./testcases.json
+# COPY runTests.js ./runTests.js
+
+# Install any npm dependencies if needed (not needed for plain JS)
+# RUN npm install
+
+# Default command when container runs
+# The backend will override this command to run runTests.js
+CMD ["node", "runTests.js"]
