@@ -7,7 +7,10 @@ import io.github.hillelgersten.leetcode_battle_backend.model.TestCases;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
 import io.github.hillelgersten.leetcode_battle_backend.repository.TestCasesRepository;
 import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuestionRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,5 +66,27 @@ public class TestCasesController {
 
             testCaseRepo.delete(testCase);
         }
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a test case",
+            description = "Updates the input and output of an existing test case")
+    public TestCases replace(
+            @Parameter(
+                    description = "ID of the test case to update",
+                    required = true,
+                    example = "123"
+            )
+            @PathVariable Long id,
+            @RequestBody TestCases newTestCase) {
+
+        Optional<TestCases> testCasesOpt = testCaseRepo.findById(id);
+        if (testCasesOpt.isPresent()) {
+            TestCases testCase = testCasesOpt.get();
+            testCase.setInput(newTestCase.getInput());
+            testCase.setOutput(newTestCase.getOutput());
+            return testCaseRepo.save(testCase);
+        }
+        return null;
     }
 }

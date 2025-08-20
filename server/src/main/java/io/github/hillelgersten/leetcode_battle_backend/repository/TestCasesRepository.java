@@ -11,5 +11,4 @@ public interface TestCasesRepository extends JpaRepository<TestCases, Long> {
     List<TestCases> findByQuestion(LeetcodeQuestions question);
     // or by question id directly
     List<TestCases> findByQuestionId(Long questionId);
-
 }
