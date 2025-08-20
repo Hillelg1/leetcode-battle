@@ -1,24 +1,29 @@
 import Editor from '@monaco-editor/react';
 import {fetchQuestion, runCode} from "../../api";
 import { useState,useEffect } from 'react';
-
+import Results from './testCases';
 import "./style.css"
+
+import type { testCase } from './testCases';
+
 export default function BattlePage() {
-  const [code,setCode] = useState("default");
-  const [description,setDescription] = useState("default");
-  const [example, setExample] = useState("default");
-  const [questionId, setQuestionId] = useState(0);
-  
+  const [code,setCode] = useState("default");  //variable for users code
+  const [description,setDescription] = useState("default"); //the description of the problem that we get 
+  const [example, setExample] = useState("default"); //examples of the function working 
+  const [questionId, setQuestionId] = useState(0); // for fetching the testcases based on teh questionID
+  const [testCases, setTestCases] = useState<testCase[]>([]); // typed array
+  const [submitted, setSubmitted] = useState(false); // wether or not to put testcases component 
+
+// on page loading 
    useEffect(() => {
     const getQuestion = async() => {
     try{
-      const res = await fetchQuestion()
+      const res = await fetchQuestion() //imported
       console.log(res);
       setCode(res.starterCode);
       setDescription(res.description);
       setQuestionId(res.id);
-     
-      if(res.example) setExample(res.example);
+      setExample(res.example);
     }
     catch(e) {
       console.log(e);
@@ -27,30 +32,46 @@ export default function BattlePage() {
     getQuestion()
   },[])
 
+//when the user hits submit with the code theyve written 
   const handleSubmit = async() => {
     try{
       const res = await runCode(questionId, code);
-      console.log(res);
+      console.log(JSON.stringify(res));
+      setTestCases(res.results);
+      setSubmitted(true);
     }
     catch(err){
       console.log(err);
     }
   }
   
-  return (
-    <div className = "battlepage">
-      <div className = "editor">
-     <Editor  defaultLanguage="javascript" value = {code} onChange={(value) => setCode(value || "")}/> 
+    return (
+    <div className="battlepage"> {/* for the whole page */}
+      <div className="main-content">{/* align editor and descirption side by side */}
+        <div className="editor">
+          <Editor
+            defaultLanguage="javascript"
+            value={code}
+            onChange={(value) => setCode(value || "")} //this is building out the code
+          />
+        </div>
+        <div className="description"> 
+          <div>{description}</div>
+          <div>{example}</div>
+        </div>
       </div>
-      <div className="description">
-        {description}
-        {example}
+      <div className="buttonContainer">
+        <button onClick={handleSubmit}>Submit</button>
       </div>
-      <div className = 'buttonContainer'>
-          <button onClick = {handleSubmit}>
-            Submit 
-          </button>
-      </div>
+      {!submitted && (
+        <div className="testcases">waiting for submition</div>
+      )}
+      {submitted && (
+        <div>
+        <div>testCases</div>
+        <Results results = {testCases} />
+        </div>
+      )}
     </div>
   );
 }

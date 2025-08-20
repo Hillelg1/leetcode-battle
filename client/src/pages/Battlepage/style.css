@@ -1,15 +1,25 @@
-.battlepage{
-    display: flex;
+.battlepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.editor {
+
+.main-content {
+  display: flex;
+}
+
+.editor, .description {
   width: 50%;
   height: 400px;
   box-sizing: border-box;
 }
+.description{
+  background-color: rgb(73, 71, 71);
+}
+.buttonContainer, .testcases {
+  margin-top: 1rem;
+}
 
-.description {
-  background-color: gray;
-  border: 1px solid #aaa;
-  width: 50%;
-  color: black;
+.buttonContainer button{
+  float: left;
 }
