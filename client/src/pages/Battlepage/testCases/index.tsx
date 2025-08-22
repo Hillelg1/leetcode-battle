@@ -1,3 +1,6 @@
+import './style.css'
+
+
 export type testCase = {
     'case': number;
     'input': {
@@ -18,31 +21,32 @@ export default function Results({results}: {results: testCase[]}){
   const secondHalf = results.slice(half);
 
   return (
-    <div className="grid grid-cols-2 gap-4 mt-4">
-      <ul className="space-y-2">
+    <div className="testCaseContainer">
+      <ul className="list-container">
         {firstHalf.map((tc, idx) => (
           <li
             key={idx}
-            className={`p-2 rounded ${
-              tc.passed ? "bg-green-100" : "bg-red-100"
+            className={`testCase ${
+              tc.passed ? "green" : "red"
             }`}
           >
-            <p><strong>Input:</strong> {`arr = ${tc.input.arr} target = ${tc.input.target}`}</p>
+            <p><strong>{idx}</strong></p>
+            <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)} ${tc.input.target}`}</p>
             <p><strong>Expected:</strong> {tc.expected}</p>
             <p><strong>Output:</strong> {tc.output}</p>
           </li>
         ))}
       </ul>
 
-      <ul className="space-y-2">
+      <ul className="list-container">
         {secondHalf.map((tc, idx) => (
           <li
             key={idx + half}
-            className={`p-2 rounded ${
-              tc.passed ? "bg-green-100" : "bg-red-100"
+            className={`testCase ${
+              tc.passed ? "green" : "red"
             }`}
           >
-           <p><strong>Input:</strong> {`arr = ${tc.input.arr} target = ${tc.input.target}`}</p>
+           <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)}, ${tc.input.target}`}</p>
             <p><strong>Expected:</strong> {tc.expected}</p>
             <p><strong>Output:</strong> {tc.output}</p>
           </li>

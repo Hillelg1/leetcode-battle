@@ -1,0 +1,40 @@
+.testCaseContainer {
+  display: flex;
+  flex-direction: column;   /* stack the ul’s vertically */
+  align-items: center;      /* center them horizontally */
+  justify-content: center;  /* center them vertically if container has height */
+  gap: 1rem;                /* space between the lists */
+  height: 100%;             /* ensure it can center vertically */
+}
+
+.testCaseContainer ul{
+  display: flex;
+  flex-direction: row; /* makes children (the <ul>s) stack vertically */
+  gap: 1rem; 
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+.list-container li{
+    float: left;
+}
+
+.testCase{
+  width: 15%;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.red{
+    background-color: red;
+}
+
+.green{
+    background-color: green;
+}

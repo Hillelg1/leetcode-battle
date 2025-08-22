@@ -4,7 +4,6 @@
   min-height: 100vh;
   color: white;
 }
-
 .navBar {
   width: 100%;            /* full width */
   height: 60px;           /* fixed height */
@@ -20,15 +19,16 @@
   transform: translateX(0); /* remove any sidebar translate */
 }
 
-
-
 .binaryTree{
   background-color: black;
 }
-
 main {
   flex: 1;
   padding: 2rem;
+}
+.menuBar{
+  list-style-type: none;
+
 }
 .menuBar li{
  float: left;
