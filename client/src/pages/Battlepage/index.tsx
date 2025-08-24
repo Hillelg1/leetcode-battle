@@ -2,6 +2,7 @@ import Editor from '@monaco-editor/react';
 import {fetchQuestion, runCode} from "../../api";
 import { useState,useEffect } from 'react';
 import Results from './testCases';
+import Timer from "./hooks/timer";
 import "./style.css"
 
 import type { testCase } from './testCases';
@@ -47,6 +48,11 @@ export default function BattlePage() {
   
     return (
     <div className="battlepage"> {/* for the whole page */}
+    <div className="header">
+    <h2>Battle Mode</h2>
+    <Timer initialSeconds={300} onComplete={handleSubmit} /> 
+    {/* 5 min timer, auto-submit when time runs out */}
+  </div>
       <div className="main-content">{/* align editor and descirption side by side */}
         <div className="editor">
           <Editor
