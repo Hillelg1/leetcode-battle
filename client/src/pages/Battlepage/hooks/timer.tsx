@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './timer.css'
 
 interface TimerProps {
   initialSeconds: number;

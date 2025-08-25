@@ -14,6 +14,7 @@ export default function BattlePage() {
   const [questionId, setQuestionId] = useState(0); // for fetching the testcases based on teh questionID
   const [testCases, setTestCases] = useState<testCase[]>([]); // typed array
   const [submitted, setSubmitted] = useState(false); // wether or not to put testcases component 
+  const [timeUp, setTimeUp] = useState(false)
 
 // on page loading 
    useEffect(() => {
@@ -45,13 +46,19 @@ export default function BattlePage() {
       console.log(err);
     }
   }
+
+  const timeOut = () =>{
+    setTimeUp(true);
+    handleSubmit();
+  }
   
     return (
     <div className="battlepage"> {/* for the whole page */}
     <div className="header">
     <h2>Battle Mode</h2>
-    <Timer initialSeconds={300} onComplete={handleSubmit} /> 
-    {/* 5 min timer, auto-submit when time runs out */}
+    {questionId !== 0 && (
+      <Timer initialSeconds={15} onComplete={timeOut} /> 
+    )}
   </div>
       <div className="main-content">{/* align editor and descirption side by side */}
         <div className="editor">
@@ -59,6 +66,7 @@ export default function BattlePage() {
             defaultLanguage="javascript"
             value={code}
             onChange={(value) => setCode(value || "")} //this is building out the code
+            options = {{readOnly: timeUp}}
           />
         </div>
         <div className="description"> 
