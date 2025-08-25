@@ -7,7 +7,7 @@ interface TimerProps {
 
 const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete }) => {
   const [seconds, setSeconds] = useState<number>(initialSeconds);
-
+  const [tenSec,setTenSec] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       setSeconds(prevSeconds => {
@@ -16,6 +16,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete }) => {
           if (onComplete) onComplete();
           return 0;
       }
+      if(prevSeconds <=10){setTenSec(true)}
         return prevSeconds - 1;
       });
     }, 1000); // Update every 1 second (1000ms)
@@ -32,7 +33,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete }) => {
 
   return (
     <div>
-      <p>{formatTime(seconds)}</p>
+      <p className = {tenSec ? "tenSeconds" : ""}>{formatTime(seconds)}</p>
     </div>
   );
 };
