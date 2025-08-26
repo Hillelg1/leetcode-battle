@@ -26,9 +26,9 @@ export default function Results({results}: {results: testCase[]}){
         {firstHalf.map((tc, idx) => (
           <li
             key={idx}
-            className={`testCase ${
-              tc.passed ? "green" : "red"
-            }`}
+            className={`list-group-item d-flex justify-content-between ${
+            tc.passed ? 'list-group-item-success' : 'list-group-item-danger'
+      }`}
           >
             <p><strong>{idx}</strong></p>
             <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)} ${tc.input.target}`}</p>
@@ -42,9 +42,9 @@ export default function Results({results}: {results: testCase[]}){
         {secondHalf.map((tc, idx) => (
           <li
             key={idx + half}
-            className={`testCase ${
-              tc.passed ? "green" : "red"
-            }`}
+            className={`list-group-item d-flex justify-content-between ${
+        tc.passed ? 'list-group-item-success' : 'list-group-item-danger'
+      }`}
           >
            <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)}, ${tc.input.target}`}</p>
             <p><strong>Expected:</strong> {tc.expected}</p>

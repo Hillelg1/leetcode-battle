@@ -1,58 +1,67 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import "./style.css";
-import { TbBinaryTree } from "react-icons/tb";
+import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import "./style.css";
+import { GiBattleGear } from "react-icons/gi";
 
 export default function Layout() {
-  const navigate = useNavigate();
   const [admin, setAdmin] = useState(false);
+
   useEffect(() => {
-      // Check if user is stored in localStorage
-      const user = localStorage.getItem("user");
-      if (user) {
-        const userObj = JSON.parse(user);
-        setAdmin(userObj.admin);
-      } 
-    }, []);
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userObj = JSON.parse(user);
+      setAdmin(userObj.admin);
+    }
+  }, []);
 
   return (
-    <div className="layout-container">
-      <aside className={`navBar visible` } >
-        <h2>
-          <TbBinaryTree className = 'binaryTree'/>
-        </h2>
-          <ul className="menuBar">
-            <li className="home">
-              <button onClick={() => navigate("/")}>Home</button>
-            </li>
-            <li className="battle">
-              <button onClick={() => navigate("/battle")}>Battle</button>
-            </li>
-            <li className="leaderboard">
-              <button onClick={() => navigate("/leaderboard")}>
-                Leaderboard
-              </button>
-            </li>
-            <li className="logout">
-              <button
-                onClick={() => {
-                  localStorage.removeItem("user");
-                  navigate("/login");
-                }}
-              >
-                Logout
-              </button>
-            </li>
-            {admin && 
-            <li className="admin">
-                <button onClick={() => window.open("http://localhost:8080/swagger-ui.html", "_blank")}>
-                  Admin
+    <div className="container-fluid p-0">
+      {/* Top Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container-fluid">
+          <Link className="navbar-brand" to="/">CodeBattles
+          <GiBattleGear /> 
+          </Link>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="/">Home</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/battle">Battle</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/leaderboard">Leaderboard</Link>
+              </li>
+              {admin && (
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    href="http://localhost:8080/swagger-ui.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Admin
+                  </a>
+                </li>
+              )}
+              <li className="nav-item">
+                <button
+                  className="btn btn-outline-light ms-2"
+                  onClick={() => {
+                    localStorage.removeItem("user");
+                  }}
+                >
+                  Logout
                 </button>
-            </li>
-          } 
-          </ul>
-      </aside>
-      <main>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      {/* Page Content */}
+      <main className="container mt-4">
         <Outlet />
       </main>
     </div>

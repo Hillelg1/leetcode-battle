@@ -67,6 +67,7 @@ export default function BattlePage() {
             value={code}
             onChange={(value) => setCode(value || "")} //this is building out the code
             options = {{readOnly: timeUp}}
+            theme='vs-dark'
           />
         </div>
         <div className="description"> 
