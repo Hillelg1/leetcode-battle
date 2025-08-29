@@ -4,7 +4,7 @@ package io.github.hillelgersten.leetcode_battle_backend.sockets.dto;
 public class ChatMessageDto {
     private String content;
     private String sender;
-    private MessageType type;
+    private MessageType messageType;
 
     public String getContent(){
         return this.content;
@@ -20,9 +20,9 @@ public class ChatMessageDto {
     }
 
     public MessageType getMessageType(){
-        return this.type;
+        return this.messageType;
     }
     public void setMessageType(MessageType type){
-        this.type = type;
+        this.messageType = type;
     }
 }

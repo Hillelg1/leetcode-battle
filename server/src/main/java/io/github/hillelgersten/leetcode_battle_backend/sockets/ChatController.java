@@ -12,13 +12,13 @@ import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.ChatMessageDt
 public class ChatController {
 
     @MessageMapping("/chat/sendMessage")
-    @SendTo("topic/public")
+    @SendTo("/topic/public")
     public ChatMessageDto sendMessage(@Payload ChatMessageDto message){
         return message;
     }
 
     @MessageMapping("/chat/addUser")
-    @SendTo("topic/public")
+    @SendTo("/topic/public")
     public ChatMessageDto addUser(@Payload ChatMessageDto message, SimpMessageHeaderAccessor headerAccessor){
         //add username in web socket session
         headerAccessor.getSessionAttributes().put("username", message.getSender());
