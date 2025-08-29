@@ -3,6 +3,7 @@ import {fetchQuestion, runCode} from "../../api";
 import { useState,useEffect } from 'react';
 import Results from './testCases';
 import Timer from "./hooks/timer";
+import SocketTest from '../../webSocket';
 import "./style.css"
 
 import type { testCase } from './testCases';
@@ -87,6 +88,7 @@ export default function BattlePage() {
         <Results results = {testCases} />
         </div>
       )}
+      <SocketTest />
     </div>
   );
 }
