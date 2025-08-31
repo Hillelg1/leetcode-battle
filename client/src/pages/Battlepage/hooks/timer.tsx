@@ -24,7 +24,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete }) => {
 
     // Cleanup function to clear the interval when the component unmounts
     return () => clearInterval(interval);
-  }, [initialSeconds]); // Empty dependency array ensures the effect runs only once on mount
+  }, [initialSeconds]); // runs on everychange to initial seconds
 
   const formatTime = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);

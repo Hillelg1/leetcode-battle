@@ -3,9 +3,8 @@ import {fetchQuestion, runCode} from "../../api";
 import { useState,useEffect } from 'react';
 import Results from './testCases';
 import Timer from "./hooks/timer";
-import SocketTest from '../../webSocket';
+import GameSocket from '../../webSocket';
 import "./style.css"
-
 import type { testCase } from './testCases';
 
 export default function BattlePage() {
@@ -58,7 +57,7 @@ export default function BattlePage() {
     <div className="header">
     <h2>Battle Mode</h2>
     {questionId !== 0 && (
-      <Timer initialSeconds={15} onComplete={timeOut} /> 
+      <Timer initialSeconds={1000} onComplete={timeOut} /> 
     )}
   </div>
       <div className="main-content">{/* align editor and descirption side by side */}
@@ -88,7 +87,7 @@ export default function BattlePage() {
         <Results results = {testCases} />
         </div>
       )}
-      <SocketTest />
+      <GameSocket />
     </div>
   );
 }

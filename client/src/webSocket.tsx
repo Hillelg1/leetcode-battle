@@ -2,56 +2,78 @@ import React, { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import * as Stomp from "stompjs";
 
-const SocketTest: React.FC = () => {
+const GameSocket: React.FC = () => {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
 
   useEffect(() => {
-    // Connect to your Spring Boot backend
     const socket = new SockJS("http://localhost:8080/ws");
-    const stompClient = Stomp.over(socket);
+    const client = Stomp.over(socket);
 
-    stompClient.connect({}, () => {
-      console.log("✅ Connected to WebSocket");
+    client.connect({}, () => {
+      console.log("Connected to WebSocket");
       setConnected(true);
+      setStompClient(client);
 
-      // Subscribe to public topic
-      stompClient.subscribe("/topic/public", (message) => {
+      // Subscribe to hardcoded match "1234"
+      client.subscribe("/topic/match/1234", (message) => {
         if (message.body) {
-          setMessages((prev) => [...prev, message.body]);
+          const msg = JSON.parse(message.body);
+          console.log("Received:", msg);
+          setMessages((prev) => [
+            ...prev,
+            `${msg.sender}: ${msg.payload || msg.messageType}`,
+          ]);
         }
       });
 
-      // Send JOIN message
-      stompClient.send(
-        "/app/chat/addUser",
+      // Send JOIN event
+      client.send(
+        "/app/game/join",
         {},
         JSON.stringify({
           sender: "frontend-user",
-          messageType: "JOIN",
+          type: "JOIN",
+          payload: "Joined the match",
         })
       );
     });
 
-    // Cleanup on component unmount
     return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log("❌ Disconnected");
+      if (client && client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected");
           setConnected(false);
         });
-      } else {
-        console.log("⚠️ Tried to disconnect but no active WebSocket connection");
       }
     };
   }, []);
+  
+
+  // Handle "Finish" event
+  const handleFinish = () => {
+    if (stompClient && stompClient.connected) {
+      stompClient.send(
+        "/app/game/finish",
+        {},
+        JSON.stringify({
+          sender: "frontend-user",
+          type: "FINISH",
+          payload: "Finished all test cases!",
+        })
+      );
+    } else {
+      console.warn("Not connected yet!");
+    }
+  };
 
   return (
     <div style={{ padding: "20px", border: "1px solid gray" }}>
-      <h3>
-        WebSocket Connection:{" "}
-        {connected ? "🟢 Connected" : "🔴 Disconnected"}
-      </h3>
+      <h3>Game WebSocket: {connected ? "Connected" : "Disconnected"}</h3>
+      <button onClick={handleFinish} disabled={!connected}>
+        Finish Match
+      </button>
       <ul>
         {messages.map((msg, idx) => (
           <li key={idx}>{msg}</li>
@@ -61,4 +83,4 @@ const SocketTest: React.FC = () => {
   );
 };
 
-export default SocketTest;
+export default GameSocket;
