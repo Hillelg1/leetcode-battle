@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import * as Stomp from "stompjs";
 
-const GameSocket: React.FC = () => {
+interface GameSocketProps{
+    username: String
+}
+
+const GameSocket: React.FC<GameSocketProps>= ({username}) => {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
@@ -33,7 +37,7 @@ const GameSocket: React.FC = () => {
         "/app/game/join",
         {},
         JSON.stringify({
-          sender: "frontend-user",
+          sender: username,
           type: "JOIN",
           payload: "Joined the match",
         })
@@ -58,7 +62,7 @@ const GameSocket: React.FC = () => {
         "/app/game/finish",
         {},
         JSON.stringify({
-          sender: "frontend-user",
+          sender: username,
           type: "FINISH",
           payload: "Finished all test cases!",
         })

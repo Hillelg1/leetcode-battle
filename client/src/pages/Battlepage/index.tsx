@@ -14,10 +14,16 @@ export default function BattlePage() {
   const [questionId, setQuestionId] = useState(0); // for fetching the testcases based on teh questionID
   const [testCases, setTestCases] = useState<testCase[]>([]); // typed array
   const [submitted, setSubmitted] = useState(false); // wether or not to put testcases component 
-  const [timeUp, setTimeUp] = useState(false)
+  const [timeUp, setTimeUp] = useState(false);
+  const [username, SetUserName] = useState("")
 
 // on page loading 
    useEffect(() => {
+    const usr = localStorage.getItem("user");
+    if(usr){
+      const user = JSON.parse(usr);
+      SetUserName(user.username);
+    }
     const getQuestion = async() => {
     try{
       const res = await fetchQuestion() //imported
@@ -87,7 +93,7 @@ export default function BattlePage() {
         <Results results = {testCases} />
         </div>
       )}
-      <GameSocket />
+      {username && (<GameSocket username={username}/>)}
     </div>
   );
 }
