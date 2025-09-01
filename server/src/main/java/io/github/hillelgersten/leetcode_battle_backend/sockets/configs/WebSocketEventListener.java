@@ -1,7 +1,5 @@
 package io.github.hillelgersten.leetcode_battle_backend.sockets.configs;
 
-import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.ChatMessageDto;
-import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.MessageType;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -22,11 +20,7 @@ public class WebSocketEventListener {
         String username = (String) accessor.getSessionAttributes().get("username");
         if(username != null){
             System.out.println("disconnected: " + username);
-            var chatMessage = new ChatMessageDto();
-            chatMessage.setMessageType(MessageType.LEAVE);
-            chatMessage.setSender(username);
-
-            messageTemplate.convertAndSend("/topic/public", chatMessage);
+            messageTemplate.convertAndSend("/topic/public", username);
         }
     }
 }
