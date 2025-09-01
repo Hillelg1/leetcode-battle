@@ -1,6 +1,5 @@
 package io.github.hillelgersten.leetcode_battle_backend.sockets.configs;
 
-import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.MessageType;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
