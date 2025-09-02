@@ -18,7 +18,7 @@ const results = testCases.map((tc, index) => {
   try {
     const output = solution(...args);
     const passed = deepEqual(output, tc.expected);
-    passedAllCases =(passed && passedAll;)
+    passedAll =(passed && passedAll;)
     return {
       case: index + 1,
       input: tc.input,
