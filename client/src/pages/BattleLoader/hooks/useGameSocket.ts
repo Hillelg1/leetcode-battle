@@ -51,6 +51,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       );
     });
   };
+  
 
   const disconnect = () => {
     subscriptionRef.current?.unsubscribe();
