@@ -10,7 +10,7 @@ const testCases = JSON.parse(fs.readFileSync(testcasesPath, 'utf8'));
 const { solution } = require('./userCode.js');
 
 const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-let passedAllCases = false;
+let passedAll = false;
 const results = testCases.map((tc, index) => {
   // Convert input object to array of arguments
   let args = Object.values(tc.input);
@@ -18,7 +18,7 @@ const results = testCases.map((tc, index) => {
   try {
     const output = solution(...args);
     const passed = deepEqual(output, tc.expected);
-    passedAllCases =(passed && passedAllCases;)
+    passedAllCases =(passed && passedAll;)
     return {
       case: index + 1,
       input: tc.input,
