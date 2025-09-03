@@ -11,10 +11,12 @@ interface UseGameSocketProps {
 
 export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps) {
   const stompClientRef = useRef<Stomp.Client | null>(null);
-  const subscriptionRef = useRef<Stomp.Subscription | null>(null);
+  const publicSubRef = useRef<Stomp.Subscription | null>(null);
+  const matchSubRef = useRef<Stomp.Subscription | null>(null);
 
   const connect = () => {
-    const user = username || JSON.parse(localStorage.getItem("user") || "{}").username;
+    const user =
+      username || JSON.parse(localStorage.getItem("user") || "{}").username;
     if (!user) {
       console.error("No username found in localStorage");
       return;
@@ -27,15 +29,28 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
     client.connect({}, () => {
       console.log("Connected to WebSocket as", user);
 
-      // Subscribe to the public match topic
-      subscriptionRef.current = client.subscribe("/topic/match/public", (message) => {
+      // STEP 1: subscribe to public matchmaking
+      publicSubRef.current = client.subscribe("/topic/match/public", (message) => {
         if (message.body) {
           const match: MatchesDTO = JSON.parse(message.body);
           console.log("Match received:", match);
+
+          // Notify app
           onMatchReceived(match);
 
-          // Optionally, unsubscribe if you only care about the first match assignment
-          subscriptionRef.current?.unsubscribe();
+          // STEP 2: unsubscribe from public queue
+          publicSubRef.current?.unsubscribe();
+
+          // STEP 3: subscribe to match-specific updates
+          matchSubRef.current = client.subscribe(`/topic/match/${match.matchId}`, (msg) => {
+            if (msg.body) {
+              const finishedMatch = JSON.parse(msg.body);
+              if(finishedMatch.type === "FINISH" && finishedMatch.sender !== username){
+                console.log("lost");
+              }
+              else {console.log("won!");}
+            }
+          });
         }
       });
 
@@ -51,10 +66,20 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       );
     });
   };
-  
+
+  const finish = (matchId: string) => {
+    if (stompClientRef.current && stompClientRef.current.connected) {
+      stompClientRef.current.send(
+        "/app/game/finish",
+        {},
+        JSON.stringify({ matchId, type: "FINISH", sender: username })
+      );
+    }
+  };
 
   const disconnect = () => {
-    subscriptionRef.current?.unsubscribe();
+    publicSubRef.current?.unsubscribe();
+    matchSubRef.current?.unsubscribe();
     if (stompClientRef.current && stompClientRef.current.connected) {
       stompClientRef.current.disconnect(() => {
         console.log("Disconnected from WebSocket");
@@ -62,5 +87,5 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
     }
   };
 
-  return { connect, disconnect, client: stompClientRef.current };
+  return { connect, disconnect, finish, client: stompClientRef.current };
 }
