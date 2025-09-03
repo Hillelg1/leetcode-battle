@@ -4,6 +4,7 @@ public class GameMessageDto {
     private String sender;
     private String type;     // JOIN, FINISH, etc.
     private String payload;  // optional, e.g. code results
+    private String matchId;
 
     public String getSender() { return sender; }
     public void setSender(String sender) { this.sender = sender; }
@@ -13,4 +14,13 @@ public class GameMessageDto {
 
     public String getPayload() { return payload; }
     public void setPayload(String payload) { this.payload = payload; }
+
+    public String getMatchId() {
+        return matchId;
+    }
+    public void setMatchId(String matchID) {
+        this.matchId = matchID;
+    }
+
+
 }
