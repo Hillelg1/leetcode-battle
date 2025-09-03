@@ -39,18 +39,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
           // STEP 2: unsubscribe from public queue
           publicSubRef.current?.unsubscribe();
 
-          // STEP 3: subscribe to match-specific updates
-          matchSubRef.current = client.subscribe(`/topic/match/${match.matchId}`, (msg) => {
-            if (msg.body) {
-              const finishedMatch = JSON.parse(msg.body);
-              if(finishedMatch.type === "FINISH" && finishedMatch.sender !== currentUser){
-                console.log(finishedMatch.sender);
-                console.log(user);
-                console.log("lost");
-              }
-              else {console.log("won!");}
-            }
-          });
+        
         }
       });
 
