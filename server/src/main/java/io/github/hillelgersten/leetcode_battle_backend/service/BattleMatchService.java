@@ -24,7 +24,7 @@ public class BattleMatchService {
             users.add(user);
             this.waitingRoom.add(user);
             System.out.println(waitingRoom);
-            if(this.waitingRoom.size() >= 2){
+            if(this.waitingRoom.size() >= 2 && this.users.size() >= 2){
                 String p1 = this.waitingRoom.poll();
                 String p2 = this.waitingRoom.poll();
                 users.remove(p1);
