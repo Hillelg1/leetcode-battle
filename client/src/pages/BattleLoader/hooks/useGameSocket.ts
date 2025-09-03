@@ -31,9 +31,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       publicSubRef.current = client.subscribe("/topic/match/public", (message) => {
         if (message.body) {
           const match: MatchesDTO = JSON.parse(message.body);
-          
-
-          // Notify app
+          // Notify app - push up to battleloader to drill info into battle page 
           onMatchReceived(match);
 
           // STEP 2: unsubscribe from public queue
@@ -55,7 +53,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       );
     });
   };
-
+  //only calls for now when a client has passed all testcases, will have to configure to do so when i add a quit function as well 
   const finish = (matchId: string) => {
     if (stompClientRef.current && stompClientRef.current.connected) {
       stompClientRef.current.send(
@@ -75,6 +73,6 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       });
     }
   };
-
+  // push connect and finish to be called in the battloader andn client to be set up in battle page will serperate the logic after
   return { connect, disconnect, finish, client: stompClientRef.current };
 }
