@@ -6,12 +6,17 @@ import Timer from "./hooks/timer";
 import "./style.css";
 import type { testCase } from "./testCases";
 
+//import type {Client} from "stompjs"; use this for typing the client in props
+
+
 interface BattlePageProps {
   question: any;
   onFinish?: ()=> void;
+  client: any;
+  matchId: String;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, matchId }) => {
   if(!question) return <div>loading...</div>
   const [code, setCode] = useState(question.starterCode); // initialize from prop
   const [description] = useState(question.description);
@@ -21,7 +26,8 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
   const [submitted, setSubmitted] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
   const [passedAll,setPassedAll] = useState(false);
-
+  const user = JSON.parse(localStorage.getItem("user") || "{}").username;
+  const [won, setWon] = useState<null|boolean>(null);
   // Handle submit
   const handleSubmit = async () => {
     try {
@@ -33,6 +39,22 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+  if (!client || !matchId) return;
+  const subscription = client.subscribe(`/topic/match/${matchId}`, (msg: any) => {
+    console.log("subscribed");
+    if (msg.body) {
+      const finishedMatch = JSON.parse(msg.body);
+      if (finishedMatch.type === "FINISH" && finishedMatch.sender !== user) {
+        setWon(false);
+      } else if (finishedMatch.type === "FINISH") {
+        setWon(true);
+      }
+    }
+  });
+  return () => subscription.unsubscribe();
+}, [client, matchId, user]);
 
   const timeOut = () => {
     setTimeUp(true);
@@ -49,12 +71,14 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
 
   return (
   <div className="battlepage">
-    {passedAll ? (
+    {(won == true) && (
       <div className="victory-screen">
-        <h2>🎉 All test cases passed!</h2>
+        <h2>All test cases passed!</h2>
         <p>Waiting for opponent...</p>
       </div>
-    ) : (
+    )}
+    { 
+    (won == null) && (
       <>
         <div className="header">
           <h2>Battle Mode</h2>
@@ -87,6 +111,13 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
             <Results results={testCases} />
           </div>
         )}
+      </>
+    )}
+    {(won == false) &&(
+      <>
+      <div className="loser-page">
+        <h2>ooooooh you lost</h2>
+      </div>
       </>
     )}
   </div>
