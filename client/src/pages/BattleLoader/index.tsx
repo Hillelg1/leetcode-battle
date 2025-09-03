@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import BattlePage from "./Battlepage";
 import type { MatchesDTO } from "../../dto/MatchesDTO"; // define this type
-
-import { useGameSocket } from "./hooks/useGameSocket"; // a custom hook we'll create
+import { useGameSocket } from "./hooks/useGameSocket"; // a custom hook 
 
 const BattleLoader: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
