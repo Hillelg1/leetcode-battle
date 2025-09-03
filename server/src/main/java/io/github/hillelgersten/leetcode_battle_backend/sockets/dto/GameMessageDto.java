@@ -22,5 +22,8 @@ public class GameMessageDto {
         this.matchId = matchID;
     }
 
+    public String toString(){
+        return "sender: " + sender + " type: " + type + " MatchId: " + matchId;
+    }
 
 }

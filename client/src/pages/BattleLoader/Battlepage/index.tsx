@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { runCode } from "../../../api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Results from "./testCases";
 import Timer from "./hooks/timer";
 import "./style.css";
@@ -29,9 +29,6 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
       setPassedAll(res.passedAll)
       setTestCases(res.results);
       setSubmitted(true);
-      if(passedAll && onFinish){
-        onFinish()
-      }
     } catch (err) {
       console.log(err);
     }
@@ -41,6 +38,15 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
     setTimeUp(true);
     handleSubmit();
   };
+
+  useEffect(() => {
+    if(passedAll && onFinish){
+        console.log('finishing battlepage')
+        onFinish()
+      }
+      else console.log("ERROR");
+  },[passedAll]);
+
   return (
   <div className="battlepage">
     {passedAll ? (

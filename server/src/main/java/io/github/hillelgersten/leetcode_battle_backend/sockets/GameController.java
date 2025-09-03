@@ -35,6 +35,7 @@ public class GameController {
     public void finishMatch(@Payload GameMessageDto match) {
         System.out.println("finish received");
         battleMatchService.finishMatch(match.getMatchId());
+        System.out.println(match.toString());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }
 }
