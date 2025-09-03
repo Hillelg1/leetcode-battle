@@ -3,6 +3,7 @@ import { useRef } from "react";
 import SockJS from "sockjs-client";
 import * as Stomp from "stompjs";
 import type { MatchesDTO } from "../../../dto/MatchesDTO";
+import { useState } from "react";
 
 interface UseGameSocketProps {
   onMatchReceived: (match: MatchesDTO) => void;
@@ -13,19 +14,16 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
   const stompClientRef = useRef<Stomp.Client | null>(null);
   const publicSubRef = useRef<Stomp.Subscription | null>(null);
   const matchSubRef = useRef<Stomp.Subscription | null>(null);
+  const [user, setUser] = useState("");
 
   const connect = () => {
-    const user =
-      username || JSON.parse(localStorage.getItem("user") || "{}").username;
-    if (!user) {
-      console.error("No username found in localStorage");
-      return;
-    }
-
+    
+    setUser(username || JSON.parse(localStorage.getItem("user") || "{}").username);
+    console.log("connected " + user)
     const socket = new SockJS("http://localhost:8080/ws");
     const client = Stomp.over(socket);
     stompClientRef.current = client;
-
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}").username;
     client.connect({}, () => {
       console.log("Connected to WebSocket as", user);
 
@@ -33,7 +31,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       publicSubRef.current = client.subscribe("/topic/match/public", (message) => {
         if (message.body) {
           const match: MatchesDTO = JSON.parse(message.body);
-          console.log("Match received:", match);
+          
 
           // Notify app
           onMatchReceived(match);
@@ -45,7 +43,9 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
           matchSubRef.current = client.subscribe(`/topic/match/${match.matchId}`, (msg) => {
             if (msg.body) {
               const finishedMatch = JSON.parse(msg.body);
-              if(finishedMatch.type === "FINISH" && finishedMatch.sender !== username){
+              if(finishedMatch.type === "FINISH" && finishedMatch.sender !== currentUser){
+                console.log(finishedMatch.sender);
+                console.log(user);
                 console.log("lost");
               }
               else {console.log("won!");}
@@ -59,7 +59,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
         "/app/game/join",
         {},
         JSON.stringify({
-          sender: user,
+          sender: currentUser,
           type: "JOIN",
           payload: ""
         })
@@ -72,7 +72,7 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
       stompClientRef.current.send(
         "/app/game/finish",
         {},
-        JSON.stringify({ matchId, type: "FINISH", sender: username })
+        JSON.stringify({ matchId: matchId, type: "FINISH", sender: user })
       );
     }
   };
