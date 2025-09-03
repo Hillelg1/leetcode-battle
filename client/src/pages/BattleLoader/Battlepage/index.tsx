@@ -8,9 +8,10 @@ import type { testCase } from "./testCases";
 
 interface BattlePageProps {
   question: any;
+  onFinish?: ()=> void;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ question }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish }) => {
   if(!question) return <div>loading...</div>
   const [code, setCode] = useState(question.starterCode); // initialize from prop
   const [description] = useState(question.description);
@@ -28,6 +29,9 @@ const BattlePage: React.FC<BattlePageProps> = ({ question }) => {
       setPassedAll(res.passedAll)
       setTestCases(res.results);
       setSubmitted(true);
+      if(passedAll && onFinish){
+        onFinish()
+      }
     } catch (err) {
       console.log(err);
     }

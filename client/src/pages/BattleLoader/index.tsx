@@ -9,7 +9,7 @@ const BattleLoader: React.FC = () => {
   const [match, setMatch] = useState<MatchesDTO | null>(null);
 
   // Custom hook handles socket connection and emits match
-  const { connect } = useGameSocket({
+  const { connect, finish } = useGameSocket({
     onMatchReceived: (matchData: MatchesDTO) => {
       setMatch(matchData);
       setLoaded(true);
@@ -20,12 +20,16 @@ const BattleLoader: React.FC = () => {
     connect(); // initiate socket connection on mount
   }, []);
 
+    const onFinish = () => {
+        if (match) finish(match.matchId);
+    }
+
   if (!loaded) {
     return <div>Connecting to opponent...</div>;
   }
 
   return match ? (
-    <BattlePage question={match.question} />
+    <BattlePage question={match.question} onFinish={onFinish}/>
   ) : (
     <div>No match found</div>
   );

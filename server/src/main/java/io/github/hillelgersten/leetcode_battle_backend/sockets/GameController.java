@@ -32,7 +32,8 @@ public class GameController {
     }
 
     @MessageMapping("/game/finish")
-    public void finishMatch(@Payload MatchesDTO match) {
+    public void finishMatch(@Payload GameMessageDto match) {
+        System.out.println("finish received");
         battleMatchService.finishMatch(match.getMatchId());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }
