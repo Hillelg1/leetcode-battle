@@ -56,6 +56,11 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, mat
   return () => subscription.unsubscribe();
 }, [client, matchId, user]);
 
+useEffect(()=> {
+  if(won === false)alert("opponent solved all test cases");
+  else if(won === true) alert("Solved all testcases!");
+},[won])
+
   const timeOut = () => {
     setTimeUp(true);
     handleSubmit();
@@ -71,14 +76,6 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, mat
 
   return (
   <div className="battlepage">
-    {(won == true) && (
-      <div className="victory-screen">
-        <h2>All test cases passed!</h2>
-        <p>Waiting for opponent...</p>
-      </div>
-    )}
-    { 
-    (won == null) && (
       <>
         <div className="header">
           <h2>Battle Mode</h2>
@@ -112,14 +109,6 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, mat
           </div>
         )}
       </>
-    )}
-    {(won == false) &&(
-      <>
-      <div className="loser-page">
-        <h2>ooooooh you lost</h2>
-      </div>
-      </>
-    )}
   </div>
 );
 };
