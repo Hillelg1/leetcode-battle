@@ -5,9 +5,8 @@ import Results from "./testCases";
 import Timer from "./hooks/timer";
 import "./style.css";
 import type { testCase } from "./testCases";
-
 //import type {Client} from "stompjs"; use this for typing the client in props
-
+import subscribe from "./hooks/subscribeToMatch"
 
 interface BattlePageProps {
   question: any;
@@ -42,17 +41,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, mat
 
   useEffect(() => {
   if (!client || !matchId) return;
-  const subscription = client.subscribe(`/topic/match/${matchId}`, (msg: any) => {
-    console.log("subscribed");
-    if (msg.body) {
-      const finishedMatch = JSON.parse(msg.body);
-      if (finishedMatch.type === "FINISH" && finishedMatch.sender !== user) {
-        setWon(false);
-      } else if (finishedMatch.type === "FINISH") {
-        setWon(true);
-      }
-    }
-  });
+const subscription = subscribe(user, client, matchId, setWon);
   return () => subscription.unsubscribe();
 }, [client, matchId, user]);
 
