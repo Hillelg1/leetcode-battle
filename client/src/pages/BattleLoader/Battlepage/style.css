@@ -1,25 +1,73 @@
 .battlepage {
+  height: 100vh;
+  max-height: 1000px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 
-.main-content {
+.header {
+  flex: 0 0 auto;
+  padding: 0.5rem;
+  background: #222;
+  color: white;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.editor, .description {
-  width: 50%;
-  height: 400px;
+.main-content,
+.editor,
+.description,
+.testcases {
+  height: 100%;
+  width: 100%;
   box-sizing: border-box;
 }
-.description{
+
+.description {
   background-color: rgb(73, 71, 71);
-}
-.buttonContainer, .testcases {
-  margin-top: 1rem;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
-.buttonContainer button{
-  float: left;
+.testcases {
+  background: #111;
+  color: white;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.buttonContainer {
+  flex: 0 0 auto;
+  padding: 0.5rem;
+}
+/* Shared resizer styles */
+.Resizer {
+  background: #444;
+  opacity: 0.6;
+  z-index: 1;
+  box-sizing: border-box;
+  background-clip: padding-box;
+}
+
+/* Vertical bar between left and right */
+.Resizer.vertical {
+  width: 8px;
+  margin: 0 -4px;
+  cursor: col-resize;
+}
+
+/* Horizontal bar between top and bottom */
+.Resizer.horizontal {
+  height: 8px;
+  margin: -4px 0;
+  cursor: row-resize;
+}
+
+/* On hover */
+.Resizer:hover {
+  transition: background 0.2s ease;
+  background: #666;
 }
