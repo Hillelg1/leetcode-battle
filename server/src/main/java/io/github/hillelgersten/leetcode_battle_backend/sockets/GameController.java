@@ -38,4 +38,12 @@ public class GameController {
         System.out.println(match.toString());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }
+
+    @MessageMapping("/game/quit")
+    public void quitMatch(@Payload GameMessageDto match){
+        System.out.println("quit received from:" + match.getSender());
+        battleMatchService.finishMatch(match.getMatchId());
+        messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
+        System.out.println(match.getSender() + ": quit");
+    }
 }
