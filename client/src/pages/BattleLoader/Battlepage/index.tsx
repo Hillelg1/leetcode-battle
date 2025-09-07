@@ -8,25 +8,27 @@ import type { testCase } from "./testCases";
 //import type {Client} from "stompjs"; use this for typing the client in props
 import subscribe from "./hooks/subscribeToMatch"
 
+
 interface BattlePageProps {
   question: any;
   onFinish?: ()=> void;
+  onQuit?: ()=>void;
   client: any;
   matchId: String;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, matchId }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, onQuit, client, matchId }) => {
   if(!question) return <div>loading...</div>
   const [code, setCode] = useState(question.starterCode); // initialize from prop
-  const [description] = useState(question.description);
+  const [description] = useState(question.description); 
   const [example] = useState(question.example);
   const [questionId] = useState(question.id); // immutable
   const [testCases, setTestCases] = useState<testCase[]>([]);
-  const [submitted, setSubmitted] = useState(false);
-  const [timeUp, setTimeUp] = useState(false);
-  const [passedAll,setPassedAll] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user") || "{}").username;
-  const [won, setWon] = useState<null|boolean>(null);
+  const [submitted, setSubmitted] = useState(false); //display results 
+  const [timeUp, setTimeUp] = useState(false); //automatically submit when time is up
+  const [passedAll,setPassedAll] = useState(false); //if user passed all handle socket logic and alerts 
+  const user = JSON.parse(localStorage.getItem("user") || "{}").username; 
+  const [battleState,setBattleState] = useState("BATTLE"); //initial state
   // Handle submit
   const handleSubmit = async () => {
     try {
@@ -39,16 +41,18 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, client, mat
     }
   };
 
+
   useEffect(() => {
   if (!client || !matchId) return;
-const subscription = subscribe(user, client, matchId, setWon);
+const subscription = subscribe(user, client, matchId, setBattleState);
   return () => subscription.unsubscribe();
 }, [client, matchId, user]);
 
 useEffect(()=> {
-  if(won === false)alert("opponent solved all test cases");
-  else if(won === true) alert("Solved all testcases!");
-},[won])
+  if(battleState === "LOST")alert("opponent solved all test cases");
+  else if(battleState === "WON") alert("Solved all testcases!");
+  else if(battleState === "QUIT") alert("opponent quit!");
+},[battleState])
 
   const timeOut = () => {
     setTimeUp(true);
@@ -68,6 +72,7 @@ useEffect(()=> {
       <>
         <div className="header">
           <h2>Battle Mode</h2>
+          <button onClick={onQuit}>Quit</button>
           {questionId && <Timer initialSeconds={600} onComplete={timeOut} />}
         </div>
         <div className="main-content">

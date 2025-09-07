@@ -64,6 +64,17 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
     }
   };
 
+  const quit = (matchId: string) => {
+    if (stompClientRef.current && stompClientRef.current.connected) {
+      stompClientRef.current.send(
+        "/app/game/quit",
+        {},
+        JSON.stringify({ matchId: matchId, type: "QUIT", sender: user })
+      );
+    }
+  };
+
+
   const disconnect = () => {
     publicSubRef.current?.unsubscribe();
     matchSubRef.current?.unsubscribe();
@@ -74,5 +85,5 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
     }
   };
   // push connect and finish to be called in the battloader andn client to be set up in battle page will serperate the logic after
-  return { connect, disconnect, finish, client: stompClientRef.current };
+  return { connect, disconnect, finish, quit, client: stompClientRef.current };
 }
