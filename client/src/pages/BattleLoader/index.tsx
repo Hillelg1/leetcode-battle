@@ -38,6 +38,7 @@ const BattleLoader: React.FC = () => {
   }
   if (battleState === "MATCHED" && match) {
     return (
+      <div style={{ flex: 1, height: "100vh", width: "100vw"}}>
       <BattlePage
         question={match.question}
         onFinish={onFinish}
@@ -45,6 +46,7 @@ const BattleLoader: React.FC = () => {
         client={client}
         matchId={match.matchId}
       />
+    </div>
     );
   }
   if (battleState === "NOMATCH") {
