@@ -27,6 +27,7 @@ const results = testCases.map((tc, index) => {
       passed
     };
   } catch (err) {
+  passedAll = false;
     return {
       case: index + 1,
       input: tc.input,
