@@ -53,6 +53,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, onQuit, cli
   }, [battleState]);
 
   const timeOut = () => {
+    console.log("timed out");
     setTimeUp(true);
     handleSubmit();
   };
