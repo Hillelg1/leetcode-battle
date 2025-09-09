@@ -10,14 +10,14 @@ interface UseGameSocketProps {
   username?: string;
 }
 
-export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps) {
+export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) {
   const stompClientRef = useRef<Stomp.Client | null>(null);
   const publicSubRef = useRef<Stomp.Subscription | null>(null);
   const matchSubRef = useRef<Stomp.Subscription | null>(null);
   const [user, setUser] = useState("");
 
   const connect = () => {
-    
+    const matchId = localStorage.getItem("matchId");
     setUser(username || JSON.parse(localStorage.getItem("user") || "{}").username);
     console.log("connected " + user)
     const socket = new SockJS("http://localhost:8080/ws");
@@ -32,17 +32,13 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
         if (message.body) {
           const match: MatchesDTO = JSON.parse(message.body);
           // Notify app - push up to battleloader to drill info into battle page 
-          onMatchReceived(match);
-
-          // STEP 2: unsubscribe from public queue
-          publicSubRef.current?.unsubscribe();
-
-        
+          onMatchReceived(match);          
         }
       });
 
       // Notify backend this user wants to join
-      client.send(
+      if(!matchId){
+        client.send(
         "/app/game/join",
         {},
         JSON.stringify({
@@ -51,8 +47,22 @@ export function useGameSocket({ onMatchReceived, username }: UseGameSocketProps)
           payload: ""
         })
       );
+      }
+
+      if(matchId){
+        client.send(
+          "/app/game/rejoin",
+          {},
+          JSON.stringify({
+          matchId: localStorage.getItem("matchId"),
+          sender: currentUser,
+          type: "REJOIN",
+          payload: ""
+        })
+        )}
     });
   };
+  
   //only calls for now when a client has passed all testcases, will have to configure to do so when i add a quit function as well 
   const finish = (matchId: string) => {
     if (stompClientRef.current && stompClientRef.current.connected) {

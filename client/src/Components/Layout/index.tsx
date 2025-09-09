@@ -44,7 +44,7 @@ export default function Layout() {
               <li className="nav-item">
                 <button
                   className="btn btn-outline-light ms-2"
-                  onClick={() => localStorage.removeItem("user")}
+                  onClick={() => localStorage.clear()}
                 >
                   Logout
                 </button>

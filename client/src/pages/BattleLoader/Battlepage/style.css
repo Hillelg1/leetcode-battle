@@ -1,6 +1,5 @@
 .battlepage {
   height: 100vh;
-  max-height: 1000px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -30,6 +29,7 @@
   background-color: rgb(73, 71, 71);
   padding: 1rem;
   overflow-y: auto;
+  color: white;
 }
 
 .testcases {

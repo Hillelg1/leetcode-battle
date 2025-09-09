@@ -13,7 +13,7 @@ interface BattlePageProps {
   onFinish?: () => void;
   onQuit?: () => void;
   client: any;
-  matchId: String;
+  matchId: string;
 }
 
 const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, onQuit, client, matchId }) => {
@@ -59,7 +59,6 @@ const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, onQuit, cli
 
   useEffect(() => {
     if (passedAll && onFinish) {
-      console.log("finishing battlepage");
       onFinish();
     }
   }, [passedAll]);

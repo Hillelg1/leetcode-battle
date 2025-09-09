@@ -10,15 +10,16 @@ const BattleLoader: React.FC = () => {
   const navigate = useNavigate();
   const [match, setMatch] = useState<MatchesDTO | null>(null);
   const [battleState, setBattleState] = useState<BattleState>("LOADING");
-
+  
   const { connect, finish, disconnect, quit, client } = useGameSocket({ //get functions for the socket connections to then prop drill into battlepage
     onMatchReceived: (matchData: MatchesDTO) => {
       setMatch(matchData);
       setBattleState("MATCHED");
-    },
+      localStorage.setItem("matchId",matchData.matchId)
+    }
   });
 
-  useEffect(() => {
+    useEffect(() => {
     connect(); // initiate socket connection on mount 
   }, []);
 
@@ -33,7 +34,8 @@ const BattleLoader: React.FC = () => {
     navigate("/")
   }
 
-  if (battleState === "LOADING") {
+
+  if (battleState === "LOADING" || !match) {
     return <div>Connecting to opponent...</div>;
   }
   if (battleState === "MATCHED" && match) {
