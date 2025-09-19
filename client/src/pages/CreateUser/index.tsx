@@ -18,6 +18,7 @@ export default function NewUser() {
     try {
       console.log("trying to create user", username, password);
       const response = await createUser(username, password);
+      JSON.parse(response)
       alert("User created successfully");
       navigate("/login");
     } catch (error) {
