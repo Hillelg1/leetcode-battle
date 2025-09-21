@@ -54,6 +54,8 @@ Here's how the app is looking so far:
 ```bash
 docker compose up --build
 ```
+#### (Must have docker cli and desktop installed)
+
 ### Prerequisites for local development
 - Node.js >= 18
 - Java 17+
