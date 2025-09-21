@@ -20,7 +20,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
     const matchId = localStorage.getItem("matchId");
     setUser(username || JSON.parse(localStorage.getItem("user") || "{}").username);
     console.log("connected " + user)
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("/ws");
     const client = Stomp.over(socket);
     stompClientRef.current = client;
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}").username;
