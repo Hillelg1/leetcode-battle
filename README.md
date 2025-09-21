@@ -47,6 +47,13 @@ Here's how the app is looking so far:
 - Database is currently local using mySql 
 
 ## Getting started
+
+### Docker
+#### if you dont want to do local development or install all the dependencies 
+#### Run 
+```bash
+docker compose up --build
+```
 ### Prerequisites for local development
 - Node.js >= 18
 - Java 17+
