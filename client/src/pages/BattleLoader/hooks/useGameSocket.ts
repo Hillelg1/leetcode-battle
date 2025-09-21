@@ -17,7 +17,6 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
   const [user, setUser] = useState("");
 
   const connect = () => {
-    const matchId = localStorage.getItem("matchId");
     setUser(username || JSON.parse(localStorage.getItem("user") || "{}").username);
     console.log("connected " + user)
     const socket = new SockJS("/ws");
@@ -30,36 +29,37 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
       // STEP 1: subscribe to public matchmaking
       publicSubRef.current = client.subscribe("/topic/match/public", (message) => {
         if (message.body) {
+          
           const match: MatchesDTO = JSON.parse(message.body);
-          // Notify app - push up to battleloader to drill info into battle page 
-          onMatchReceived(match);          
+          if(match.matchId !== ""){
+            // Notify app - push up to battleloader to drill info into battle page 
+              onMatchReceived(match);   
+          }
+
+          //no rejoin
+          else{
+                client.send(
+                  "/app/game/join",
+                  {},
+                  JSON.stringify({
+                 sender: currentUser,
+                 type: "JOIN",
+                payload: ""
+                })
+            );
+          }
+           
         }
       });
 
       // Notify backend this user wants to join
-      if(!matchId){
-        client.send(
-        "/app/game/join",
+      client.send(
+        "/app/game/rejoin",
         {},
         JSON.stringify({
-          sender: currentUser,
-          type: "JOIN",
-          payload: ""
-        })
-      );
-      }
-
-      if(matchId){
-        client.send(
-          "/app/game/rejoin",
-          {},
-          JSON.stringify({
-          matchId: localStorage.getItem("matchId"),
-          sender: currentUser,
-          type: "REJOIN",
-          payload: ""
-        })
-        )}
+        sender: currentUser,
+      })
+      )
     });
   };
   

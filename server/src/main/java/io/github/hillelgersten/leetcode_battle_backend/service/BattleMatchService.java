@@ -18,17 +18,16 @@ public class BattleMatchService {
 
     private final Queue<String> waitingRoom = new LinkedList<>();
     HashMap<String, MatchesDTO> matches = new HashMap<>();
-    HashSet<String> users = new HashSet<>();
+    HashMap<String,MatchesDTO> userToMatches = new HashMap<>();
     public synchronized MatchesDTO addToUserRoom(String user){
-            if(users.contains(user))return null;
-            users.add(user);
+            if(userToMatches.containsKey(user))return null;
+            userToMatches.put(user,null);
             this.waitingRoom.add(user);
             System.out.println(waitingRoom);
-            if(this.waitingRoom.size() >= 2 && this.users.size() >= 2){
+            if(this.waitingRoom.size() >= 2 && this.userToMatches.size() >= 2){
                 String p1 = this.waitingRoom.poll();
                 String p2 = this.waitingRoom.poll();
-                users.remove(p1);
-                users.remove(p2);
+
                 try {
                     Optional<LeetcodeQuestions> optionalQuestion = repo.findById(1L);
                     if(optionalQuestion.isPresent()){
@@ -46,6 +45,8 @@ public class BattleMatchService {
                         String matchId = UUID.randomUUID().toString();
                         match.setMatchId(matchId);
                         matches.put(matchId,match);
+                        userToMatches.put(p1,match);
+                        userToMatches.put(p2,match);
                         return match;
                     }
                 } catch (Exception e) {
@@ -55,8 +56,13 @@ public class BattleMatchService {
         return null;
     }
 
-    public void finishMatch(String matchId){
+    public void finishMatch(String matchId, String sender){
         matches.remove(matchId);
+        userToMatches.remove(sender);
+    }
+
+    public MatchesDTO checkForRejoin(String userName){
+        return userToMatches.get(userName);
     }
 
 }

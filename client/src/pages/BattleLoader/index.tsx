@@ -15,7 +15,6 @@ const BattleLoader: React.FC = () => {
     onMatchReceived: (matchData: MatchesDTO) => {
       setMatch(matchData);
       setBattleState("MATCHED");
-      localStorage.setItem("matchId",matchData.matchId)
     }
   });
 

@@ -34,7 +34,7 @@ public class GameController {
     @MessageMapping("/game/finish")
     public void finishMatch(@Payload GameMessageDto match) {
         System.out.println("finish received from:" + match.getSender());
-        battleMatchService.finishMatch(match.getMatchId());
+        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
         System.out.println(match.toString());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }
@@ -42,8 +42,21 @@ public class GameController {
     @MessageMapping("/game/quit")
     public void quitMatch(@Payload GameMessageDto match){
         System.out.println("quit received from:" + match.getSender());
-        battleMatchService.finishMatch(match.getMatchId());
+        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
         System.out.println(match.getSender() + ": quit");
+    }
+
+    @MessageMapping("/game/rejoin")
+    public void rejoinMatch(@Payload GameMessageDto tryMatch){
+        MatchesDTO match = battleMatchService.checkForRejoin(tryMatch.getSender());
+        if(match!=null){
+            messagingTemplate.convertAndSend("/topic/match/public", match);
+        }
+        else {
+            MatchesDTO noMatch = new MatchesDTO();
+            noMatch.setMatchId("");
+            messagingTemplate.convertAndSend("/topic/match/public", noMatch);
+        }
     }
 }
