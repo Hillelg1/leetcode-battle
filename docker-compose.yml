@@ -9,11 +9,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/leetcode_battle
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/leetcode_battle?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: battleuser
       SPRING_DATASOURCE_PASSWORD: battlepass
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # allow backend to launch containers
+      - runner_files:/runner_files                  # shared volume for code execution
+    user: root
 
   frontend:
     build:
@@ -21,7 +26,7 @@ services:
       dockerfile: frontend.Dockerfile
     container_name: frontend
     ports:
-      - "3000:80"  # access frontend at http://localhost:3000
+      - "3000:80"
     depends_on:
       - backend
 
@@ -38,6 +43,23 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./db/data.sql:/docker-entrypoint-initdb.d/data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+      start_period: 30s
+      timeout: 5s
+
+  runner:
+    build:
+      context: ./runner
+      dockerfile: runner.Dockerfile
+    container_name: runner
+    ports:
+      - "4000:4000"
+    volumes:
+      - runner_files:/runner_files
 
 volumes:
   db_data:
+  runner_files:
