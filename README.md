@@ -15,10 +15,10 @@
 Here's how the app is looking so far: 
 
 #### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](documentation/screenshots/home.png)
 
 #### Battle page
-![Battle Page](screenshots/battle.png)
+![Battle Page](documentation/screenshots/battle.png)
 
 ###### Would Love to work on the ui more but for now good functionality is key
 
