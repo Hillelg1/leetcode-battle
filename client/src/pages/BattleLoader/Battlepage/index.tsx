@@ -17,7 +17,7 @@ interface BattlePageProps {
 }
 
 const BattlePage: React.FC<BattlePageProps> = ({ question, onFinish, onQuit, client, matchId }) => {
-  if (!question) return <div>Questoin not found...</div>;
+  if (!question) return <div>Question not found...</div>;
   const [code, setCode] = useState(question.starterCode);
   const [description] = useState(question.description);
   const [example] = useState(question.example);

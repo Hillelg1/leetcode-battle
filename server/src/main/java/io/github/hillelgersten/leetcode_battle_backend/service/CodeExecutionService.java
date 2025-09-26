@@ -52,8 +52,8 @@ public class CodeExecutionService {
 
         // 4. Call runner service
         try {
-            System.out.println(request);
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
+            System.out.println(result);
             return result;
         } catch (Exception e) {
             throw new RuntimeException("Runner service failed", e);
