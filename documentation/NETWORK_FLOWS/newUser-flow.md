@@ -4,8 +4,8 @@
 
 ```mermaid
 sequenceDiagram
-    participant DB as Database
-    participant Client
-    participant Server
-        
+    Client->>Server: POST /api/users/createUser
+    Server->>Database: Insert into users..
+    Database-->> Server: new user data
+    Server-->>Client: new user data
 ```
