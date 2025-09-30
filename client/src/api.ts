@@ -20,12 +20,19 @@ export async function createUser(username: string, password: string) {
   }
 }
 
-export async function loginUser(username: String, password: string) {
+export async function loginUser(username: string, password: string) {
   const res = await fetch('/api/users/fetchUser', {
     method: 'POST',
-     );
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      user: username,
+      password: password,
+    }),
+  });
   if (!res.ok) throw new Error('failed to login user');
-    return res.json();
+  return res.json();
 }
 
 export async function fetchQuestion(){
