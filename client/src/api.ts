@@ -58,7 +58,7 @@ export async function createTestCases(questionId: number,input: String, output: 
   }
 }
 
-export async function runCode(questionId: number, userCode: String){
+export async function runCode(questionId: number, userCode: string){
   console.log(userCode);  
   try{
     const res = await fetch('api/code/submit',{
