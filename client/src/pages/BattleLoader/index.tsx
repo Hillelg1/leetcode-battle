@@ -41,11 +41,11 @@ const BattleLoader: React.FC = () => {
     return (
       <div style={{ flex: 1, height: "100vh", width: "100vw"}}>
       <BattlePage
-        question={match.question}
+        match = {match}
         onFinish={onFinish}
         onQuit={onQuit}
         client={client}
-        matchId={match.matchId}
+
       />
     </div>
     );

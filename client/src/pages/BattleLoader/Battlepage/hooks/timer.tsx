@@ -1,42 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import './timer.css'
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import "./timer.css";
 
 interface TimerProps {
-  initialSeconds: number;
-  onComplete?: ()=>void;
+    initialSeconds: number;
+    onComplete?: () => void;
+    startTime: number; // epoch seconds from backend
 }
 
-const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete }) => {
-  const [seconds, setSeconds] = useState<number>(initialSeconds);
-  const [tenSec,setTenSec] = useState(false);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prevSeconds => {
-        if (prevSeconds <= 1) {
-          clearInterval(interval);
-          if (onComplete) onComplete();
-          return 0;
-      }
-      if(prevSeconds <=10){setTenSec(true)}
-        return prevSeconds - 1;
-      });
-    }, 1000); // Update every 1 second (1000ms)
+const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) => {
+    const completedRef = useRef(false);
 
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(interval);
-  }, [initialSeconds]); // runs on everychange to initial seconds
+    const computeRemaining = useMemo(() => {
+        return () => {
+            const nowSec = Math.floor(Date.now() / 1000);
+            const elapsed = nowSec - startTime
+            return Math.max(0, initialSeconds - elapsed);
+        };
+    }, [initialSeconds, startTime]);
 
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainingSeconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+    const [seconds, setSeconds] = useState<number>(() => computeRemaining());
 
-  return (
-    <div>
-      <p className = {tenSec ? "tenSeconds" : ""}>{formatTime(seconds)}</p>
-    </div>
-  );
+    useEffect(() => {
+        completedRef.current = false;
+
+        const tick = () => {
+            const remaining = computeRemaining();
+            setSeconds(remaining);
+
+            if (remaining === 0 && !completedRef.current) {
+                completedRef.current = true;
+                onComplete?.();
+            }
+        };
+
+        tick(); // update immediately on mount/refresh
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [computeRemaining, onComplete]);
+
+    const tenSec = seconds <= 10;
+
+    const formatTime = (totalSeconds: number) => {
+        const minutes = Math.floor(totalSeconds / 60);
+        const remainingSeconds = totalSeconds % 60;
+        return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+            .toString()
+            .padStart(2, "0")}`;
+    };
+
+    return (
+        <div>
+            <p className={tenSec ? "tenSeconds" : ""}>{formatTime(seconds)}</p>
+        </div>
+    );
 };
 
 export default Timer;
