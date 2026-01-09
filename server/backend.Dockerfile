@@ -7,8 +7,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Stage 2: run
-FROM openjdk:17-jdk-slim
-
+FROM eclipse-temurin:17-jdk-jammy
 # Install Docker CLI so backend can run docker commands via ProcessBuilder
 RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
 
