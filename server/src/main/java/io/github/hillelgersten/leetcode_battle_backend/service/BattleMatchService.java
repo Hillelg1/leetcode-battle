@@ -8,7 +8,14 @@ import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuesti
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
 
-import java.util.*;
+import io.github.hillelgersten.leetcode_battle_backend.dto.StoreCodeDTO;
+import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Queue;
+import java.util.Optional;
+import java.util.UUID;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class BattleMatchService {
@@ -44,6 +51,8 @@ public class BattleMatchService {
                         match.setQuestion(questionDTO);
                         String matchId = UUID.randomUUID().toString();
                         match.setMatchId(matchId);
+                        Instant startedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+                        match.setStartTime(startedAt.getEpochSecond());
                         matches.put(matchId,match);
                         userToMatches.put(p1,match);
                         userToMatches.put(p2,match);
@@ -58,11 +67,20 @@ public class BattleMatchService {
 
     public void finishMatch(String matchId, String sender){
         matches.remove(matchId);
-        userToMatches.remove(sender);
+        MatchesDTO match = userToMatches.get(sender);
+        userToMatches.remove(match.getP1());
+        userToMatches.remove(match.getP2());
     }
 
     public MatchesDTO checkForRejoin(String userName){
         return userToMatches.get(userName);
     }
 
+    public void storeCode(StoreCodeDTO code){
+        MatchesDTO match = userToMatches.get(code.getUserName());
+        if (code.getUserName().equals(match.getP1()))
+            match.setP1Code(code.getCode());
+        else if (code.getUserName().equals(match.getP2()))
+            match.setP2Code(code.getCode());
+    }
 }

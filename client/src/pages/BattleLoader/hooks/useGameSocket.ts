@@ -31,6 +31,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
         if (message.body) {
           
           const match: MatchesDTO = JSON.parse(message.body);
+          console.log(match.toString())
           if(match.matchId !== ""){
             // Notify app - push up to battleloader to drill info into battle page 
               onMatchReceived(match);   

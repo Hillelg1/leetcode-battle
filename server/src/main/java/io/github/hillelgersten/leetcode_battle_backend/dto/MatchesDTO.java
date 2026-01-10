@@ -6,18 +6,26 @@ public class MatchesDTO {
     private String matchId;
     private String p1;
     private String p2;
+
+    private String p1Code = "";
+    private String p2Code = "";
+
     private QuestionDTO question;
     private MessageType type;
+
+    private long startTime;
+
 
     public MatchesDTO() {
     }
 
-    public MatchesDTO(String matchId, String p1, String p2, QuestionDTO question, MessageType type) {
+    public MatchesDTO(String matchId, String p1, String p2, QuestionDTO question, MessageType type, long startTime) {
         this.matchId = matchId;
         this.p1 = p1;
         this.p2 = p2;
         this.question = question;
         this.type = type;
+        this.startTime = startTime;
     }
 
     // Getters & Setters
@@ -60,4 +68,21 @@ public class MatchesDTO {
     public void setType(MessageType type) {
         this.type = type;
     }
+
+    public void setStartTime(long startTime){this.startTime = startTime;}
+    public long getStartTime(){return startTime;}
+
+    public String getP1Code() {
+        return p1Code;
+    }
+    public void setP1Code(String p1Code) {
+        this.p1Code = p1Code;
+    }
+    public String getP2Code() {
+        return p2Code;
+    }
+    public void setP2Code(String p2Code) {
+        this.p2Code = p2Code;
+    }
+
 }
