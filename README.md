@@ -75,9 +75,9 @@ $ npm install
 $ npm run dev
 ```
 ## Future Plans 
-- Must figure out how to preserve users Match State in the front end in case the backend goes down
-- Add Documentation to many of the Socket/API connections and calls
+- Must figure out how to preserve users Match State in the front end in case the backend goes down (Done)
+- Add Documentation to many of the Socket/API connections and calls (Done) 
 - Add Testing to many of the Database calls in the backend 
 - integrate Spring security into backend. 
-- Make a demo website to be up for people to check out 
-- much later but start thinking about migrating to an actual server (cloud?)
+- Make a demo website to be up for people to check out (Make youtube video instead) 
+- much later but start thinking about migrating to an actual server (cloud?) (far to expensive to run user code on the cloud, going to make youtube demo)
