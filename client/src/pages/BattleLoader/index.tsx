@@ -11,7 +11,7 @@ const BattleLoader: React.FC = () => {
   const [match, setMatch] = useState<MatchesDTO | null>(null);
   const [battleState, setBattleState] = useState<BattleState>("LOADING");
   
-  const { connect, finish, disconnect, quit, client } = useGameSocket({ //get functions for the socket connections to then prop drill into battlepage
+  const { connect, finish, disconnect, quit, timeOut, client } = useGameSocket({ //get functions for the socket connections to then prop drill into battlepage
     onMatchReceived: (matchData: MatchesDTO) => {
       setMatch(matchData);
       setBattleState("MATCHED");
@@ -24,6 +24,7 @@ const BattleLoader: React.FC = () => {
 
   const onFinish = () => {
     if (match) finish(match.matchId); // prop drill onfinish to battlepage
+    disconnect();
   };
 
   const onQuit = () =>{
@@ -33,10 +34,15 @@ const BattleLoader: React.FC = () => {
     navigate("/")
   }
 
+  const onTimeOut = () => {
+      if (match) timeOut(match.matchId);
+      disconnect();
+  }
 
   if (battleState === "LOADING" || !match) {
     return <div>Connecting to opponent...</div>;
   }
+
   if (battleState === "MATCHED" && match) {
     return (
       <div style={{ flex: 1, height: "100vh", width: "100vw"}}>
@@ -44,8 +50,8 @@ const BattleLoader: React.FC = () => {
         match = {match}
         onFinish={onFinish}
         onQuit={onQuit}
+        onTimeOut = {onTimeOut}
         client={client}
-
       />
     </div>
     );

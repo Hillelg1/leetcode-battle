@@ -3,6 +3,7 @@ package io.github.hillelgersten.leetcode_battle_backend.sockets;
 import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.GameMessageDto;
 import io.github.hillelgersten.leetcode_battle_backend.service.BattleMatchService;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
+import jdk.jfr.Percentage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -30,23 +31,6 @@ public class GameController {
             messagingTemplate.convertAndSend("/topic/match/public", match);
         }
     }
-
-    @MessageMapping("/game/finish")
-    public void finishMatch(@Payload GameMessageDto match) {
-        System.out.println("finish received from:" + match.getSender());
-        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
-        System.out.println(match.toString());
-        messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
-    }
-
-    @MessageMapping("/game/quit")
-    public void quitMatch(@Payload GameMessageDto match){
-        System.out.println("quit received from:" + match.getSender());
-        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
-        messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
-        System.out.println(match.getSender() + ": quit");
-    }
-
     @MessageMapping("/game/rejoin")
     public void rejoinMatch(@Payload GameMessageDto tryMatch){
         MatchesDTO match = battleMatchService.checkForRejoin(tryMatch.getSender());
@@ -59,4 +43,13 @@ public class GameController {
             messagingTemplate.convertAndSend("/topic/match/public", noMatch);
         }
     }
+
+    @MessageMapping("/game/finish")
+    public void finishMatch(@Payload GameMessageDto match) {
+        System.out.println("finish received from:" + match.getSender());
+        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
+        System.out.println(match.toString());
+        messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
+    }
+
 }

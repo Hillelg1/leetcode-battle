@@ -33,7 +33,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
           const match: MatchesDTO = JSON.parse(message.body);
           console.log(match.toString())
           if(match.matchId !== ""){
-            // Notify app - push up to battleloader to drill info into battle page 
+            // Notify app - push up to battle loader to drill info into battle page
               onMatchReceived(match);   
           }
 
@@ -64,26 +64,28 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
     });
   };
   
-  //only calls for now when a client has passed all testcases, will have to configure to do so when i add a quit function as well 
+  //only calls for now when a client has passed all testcases, will have to configure to do so when i add a quit function as well
+
+  const sendGameMessage = (matchId: string, type:string) =>{
+      if (stompClientRef.current && stompClientRef.current.connected) {
+          stompClientRef.current.send(
+              "/app/game/finish",
+              {},
+              JSON.stringify({ matchId: matchId, type: type, sender: user })
+          );
+      }
+  };
   const finish = (matchId: string) => {
-    if (stompClientRef.current && stompClientRef.current.connected) {
-      stompClientRef.current.send(
-        "/app/game/finish",
-        {},
-        JSON.stringify({ matchId: matchId, type: "FINISH", sender: user })
-      );
-    }
+    sendGameMessage(matchId, "FINISH");
   };
 
   const quit = (matchId: string) => {
-    if (stompClientRef.current && stompClientRef.current.connected) {
-      stompClientRef.current.send(
-        "/app/game/quit",
-        {},
-        JSON.stringify({ matchId: matchId, type: "QUIT", sender: user })
-      );
-    }
+    sendGameMessage(matchId, "QUIT");
   };
+
+  const timeOut = (matchId: string) => {
+      sendGameMessage(matchId, "TIMEOUT");
+  }
 
 
   const disconnect = () => {
@@ -96,5 +98,5 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
     }
   };
   // push connect and finish to be called in the battloader andn client to be set up in battle page will serperate the logic after
-  return { connect, disconnect, finish, quit, client: stompClientRef.current };
+  return { connect, disconnect, finish, quit, timeOut, client: stompClientRef.current };
 }

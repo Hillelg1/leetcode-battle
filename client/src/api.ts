@@ -35,15 +35,6 @@ export async function loginUser(username: string, password: string) {
   return res.json();
 }
 
-export async function fetchQuestion(){
-  const res = await fetch('/api/leetcode/question',{
-    method: 'GET',
-    headers: {'Content-type': 'application/json'},
-  });
-  if(!res.ok)throw new Error("couldnt get question");
-    return res.json();
-}
-
 export async function createTestCases(questionId: number,input: String, output: String){
   try{
     const res = await fetch('api/testcases',{
