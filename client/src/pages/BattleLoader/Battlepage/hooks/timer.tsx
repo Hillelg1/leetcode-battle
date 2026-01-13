@@ -9,7 +9,7 @@ interface TimerProps {
 
 const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) => {
     const completedRef = useRef(false);
-
+    const onCompleteRef = useRef(onComplete);
     const computeRemaining = useMemo(() => {
         return () => {
             const nowSec = Math.floor(Date.now() / 1000);
@@ -29,14 +29,14 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) 
 
             if (remaining === 0 && !completedRef.current) {
                 completedRef.current = true;
-                onComplete?.();
+                onCompleteRef.current?.();
             }
         };
 
         tick(); // update immediately on mount/refresh
         const interval = setInterval(tick, 1000);
         return () => clearInterval(interval);
-    }, [computeRemaining, onComplete]);
+    }, [computeRemaining]);
 
     const tenSec = seconds <= 10;
 

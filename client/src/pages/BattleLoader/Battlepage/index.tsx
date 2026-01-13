@@ -14,37 +14,30 @@ interface BattlePageProps {
     onFinish?: () => void;
     onQuit?: () => void;
     client: any;
+    onTimeOut?: () => void;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, match }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match }) => {
     if (!match.question) return <div>Question not found...</div>;
 
     const user = JSON.parse(localStorage.getItem("user") || "{}").username;
+    const question: any = match.question;
+    const description = question.description;
+    const example = question.example;
+    const matchId = match.matchId;
+    const questionId = question.id;
+    const p1= match.p1;
+    const p2 = match.p2;
+    const startedAt = Number(match.startTime)
 
-    // If match can change, useMemo would be cleaner; keeping your style for minimal diff
-    const [question] = useState<any>(match.question);
     const [code, setCode] = useState<string>(question.starterCode);
-
-    const [description] = useState(question.description);
-    const [example] = useState(question.example);
-
-    const [matchId] = useState(match.matchId);
-    const [questionId] = useState(question.id);
-
-    const [p1] = useState(match.p1);
-    const [p2] = useState(match.p2);
-
-    // make sure your DTO field is actually startedAt (epoch seconds). If it's startTime, keep that.
-    const [startedAt] = useState<number>(
-        // @ts-expect-error support both names during transition
-        (match.startedAt ?? match.startTime) as number
-    );
-
     const [testCases, setTestCases] = useState<testCase[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [timeUp, setTimeUp] = useState(false);
     const [passedAll, setPassedAll] = useState(false);
     const [battleState, setBattleState] = useState("BATTLE");
+
+    const isLocked = timeUp || passedAll;
 
     const saveTimeoutRef = useRef<number | null>(null);
 
@@ -54,17 +47,18 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, match
             setPassedAll(res.passedAll);
             setTestCases(res.results);
             setSubmitted(true);
+            if (res.passedAll) onFinish?.();
         } catch (err) {
             console.log(err);
         }
     };
 
     const storeCode = (value?: string) => {
+        if(isLocked) return;
+
         const nextCode = value ?? "";
         setCode(nextCode);
 
-        // Only store for the current user (optional gate; remove if you store for both)
-        // If you want to store for both, delete this entire if.
         if (!user) return;
 
         // Debounce saves to avoid spamming backend on every keystroke
@@ -106,19 +100,25 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, match
 
     useEffect(() => {
         if (battleState === "LOST") alert("opponent solved all test cases");
-        else if (battleState === "WON") alert("Solved all testcases!");
-        else if (battleState === "QUIT") alert("opponent quit!");
+        if (battleState === "WON") alert("Solved all testcases!");
+        if (battleState === "QUIT") alert("opponent quit!");
+        if (battleState === "TIMEOUT") alert("Time is up!");
+        if (battleState == "OPTIMEOUT") alert("Opponent timed out!");
     }, [battleState]);
 
     const timeOut = () => {
         console.log("timed out");
         setTimeUp(true);
         handleSubmit();
+        if (!passedAll && onTimeOut)onTimeOut();
     };
 
     useEffect(() => {
-        if (passedAll && onFinish) onFinish();
-    }, [passedAll, onFinish]);
+        if ((passedAll||timeUp) && onFinish) {
+            onFinish();
+            setTimeUp(true);
+        }
+    }, [passedAll, onFinish, timeUp]);
 
     const determineStarterCode = () => {
         console.log(match.p2Code);
@@ -142,7 +142,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, match
                 </button>
 
                 {questionId && Number.isFinite(startedAt) && (
-                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} />
+                    <Timer initialSeconds={10} onComplete={timeOut} startTime={startedAt} />
                 )}
             </div>
 

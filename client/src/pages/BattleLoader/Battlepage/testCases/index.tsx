@@ -4,7 +4,7 @@ import './style.css'
 export type testCase = {
     'case': number;
     'input': {
-        'arr': any[],
+        'nums': any[],
         'target': number
     };
     'expected': [];
@@ -31,7 +31,7 @@ export default function Results({results}: {results: testCase[]}){
       }`}
           >
             <p><strong>{idx}</strong></p>
-            <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)} ${tc.input.target}`}</p>
+            <p><strong>Input:</strong> {`${JSON.stringify(tc.input)}`}</p>
             <p><strong>Expected:</strong> {tc.expected}</p>
             <p><strong>Output:</strong> {tc.output}</p>
           </li>
@@ -46,7 +46,7 @@ export default function Results({results}: {results: testCase[]}){
         tc.passed ? 'list-group-item-success' : 'list-group-item-danger'
       }`}
           >
-           <p><strong>Input:</strong> {`${JSON.stringify(tc.input.arr)}, ${tc.input.target}`}</p>
+           <p><strong>Input:</strong> {`${JSON.stringify(tc.input.nums)}, ${tc.input.target}`}</p>
             <p><strong>Expected:</strong> {tc.expected}</p>
             <p><strong>Output:</strong> {tc.output}</p>
           </li>

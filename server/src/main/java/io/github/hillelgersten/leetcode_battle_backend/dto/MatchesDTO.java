@@ -15,6 +15,9 @@ public class MatchesDTO {
 
     private long startTime;
 
+    private boolean p1Done = false;
+    private boolean p2Done = false;
+
 
     public MatchesDTO() {
     }
@@ -72,17 +75,16 @@ public class MatchesDTO {
     public void setStartTime(long startTime){this.startTime = startTime;}
     public long getStartTime(){return startTime;}
 
-    public String getP1Code() {
-        return p1Code;
+    public String getP1Code() {return p1Code;}
+    public void setP1Code(String p1Code) {this.p1Code = p1Code;}
+    public String getP2Code() {return p2Code;}
+    public void setP2Code(String p2Code) {this.p2Code = p2Code;}
+
+    public void setDone(String sender){
+        if(sender.equals(p1)) p1Done = true;
+        else p2Done = true;
     }
-    public void setP1Code(String p1Code) {
-        this.p1Code = p1Code;
-    }
-    public String getP2Code() {
-        return p2Code;
-    }
-    public void setP2Code(String p2Code) {
-        this.p2Code = p2Code;
-    }
+
+    public boolean bothDone(){return p1Done && p2Done;}
 
 }

@@ -66,8 +66,10 @@ public class BattleMatchService {
     }
 
     public void finishMatch(String matchId, String sender){
-        matches.remove(matchId);
         MatchesDTO match = userToMatches.get(sender);
+        match.setDone(sender);
+        if (!match.bothDone())return;
+        matches.remove(matchId);
         userToMatches.remove(match.getP1());
         userToMatches.remove(match.getP2());
     }
@@ -78,6 +80,7 @@ public class BattleMatchService {
 
     public void storeCode(StoreCodeDTO code){
         MatchesDTO match = userToMatches.get(code.getUserName());
+        if (match == null)return;
         if (code.getUserName().equals(match.getP1()))
             match.setP1Code(code.getCode());
         else if (code.getUserName().equals(match.getP2()))
