@@ -2,7 +2,6 @@ package io.github.hillelgersten.leetcode_battle_backend.controller;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
 import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuestionRepository;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/leetcode")

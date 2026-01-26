@@ -14,10 +14,12 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
   const stompClientRef = useRef<Stomp.Client | null>(null);
   const publicSubRef = useRef<Stomp.Subscription | null>(null);
   const matchSubRef = useRef<Stomp.Subscription | null>(null);
-  const [user, setUser] = useState("");
+  const [usernameScoped, setUsername] = useState<string | undefined>(username);
+
 
   const connect = () => {
-    setUser(username || JSON.parse(localStorage.getItem("user") || "{}").username);
+    const user = username || JSON.parse(localStorage.getItem("user") || "{}").username
+    setUsername(user);
     console.log("connected " + user)
     const socket = new SockJS("/ws");
     const client = Stomp.over(socket);
@@ -27,7 +29,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
       console.log("Connected to WebSocket as", user);
 
       // STEP 1: subscribe to public matchmaking
-      publicSubRef.current = client.subscribe("/topic/match/public", (message) => {
+      publicSubRef.current = client.subscribe(`/topic/match/${user}`, (message) => {
         if (message.body) {
           
           const match: MatchesDTO = JSON.parse(message.body);
@@ -71,7 +73,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
           stompClientRef.current.send(
               "/app/game/finish",
               {},
-              JSON.stringify({ matchId: matchId, type: type, sender: user })
+              JSON.stringify({ matchId: matchId, type: type, sender: usernameScoped })
           );
       }
   };

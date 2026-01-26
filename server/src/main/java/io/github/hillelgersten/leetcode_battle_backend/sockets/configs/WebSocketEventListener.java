@@ -20,7 +20,7 @@ public class WebSocketEventListener {
         String username = (String) accessor.getSessionAttributes().get("username");
         if(username != null){
             System.out.println("disconnected: " + username);
-            messageTemplate.convertAndSend("/topic/public", username);
+            messageTemplate.convertAndSend("/topic/"+username, username);
         }
     }
 }

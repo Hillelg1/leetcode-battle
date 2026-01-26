@@ -142,7 +142,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
                 </button>
 
                 {questionId && Number.isFinite(startedAt) && (
-                    <Timer initialSeconds={10} onComplete={timeOut} startTime={startedAt} />
+                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} />
                 )}
             </div>
 

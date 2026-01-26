@@ -26,14 +26,14 @@ export default function Results({results}: {results: testCase[]}){
         {firstHalf.map((tc, idx) => (
           <li
             key={idx}
-            className={`list-group-item d-flex justify-content-between ${
+            className={`testCase list-group-item d-flex justify-content-between ${
             tc.passed ? 'list-group-item-success' : 'list-group-item-danger'
       }`}
           >
             <p><strong>{idx}</strong></p>
             <p><strong>Input:</strong> {`${JSON.stringify(tc.input)}`}</p>
-            <p><strong>Expected:</strong> {tc.expected}</p>
-            <p><strong>Output:</strong> {tc.output}</p>
+            <p><strong>Expected:</strong> {JSON.stringify(tc.expected)}</p>
+            <p><strong>Output:</strong> {JSON.stringify(tc.output)}</p>
           </li>
         ))}
       </ul>
@@ -42,13 +42,14 @@ export default function Results({results}: {results: testCase[]}){
         {secondHalf.map((tc, idx) => (
           <li
             key={idx + half}
-            className={`list-group-item d-flex justify-content-between ${
+            className={`testCase list-group-item d-flex justify-content-between ${
         tc.passed ? 'list-group-item-success' : 'list-group-item-danger'
       }`}
           >
-           <p><strong>Input:</strong> {`${JSON.stringify(tc.input.nums)}, ${tc.input.target}`}</p>
-            <p><strong>Expected:</strong> {tc.expected}</p>
-            <p><strong>Output:</strong> {tc.output}</p>
+          <p><strong>{idx}</strong></p>
+           <p className={"tcInput"}><strong>Input:</strong> {`${JSON.stringify(tc.input)}`}</p>
+            <p><strong>Expected:</strong> {JSON.stringify(tc.expected)}</p>
+            <p><strong>Output:</strong> {JSON.stringify(tc.output)}</p>
           </li>
         ))}
       </ul>
