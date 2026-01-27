@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createUser } from "../../api";
-
+import "./style.css"
 export default function NewUser() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -27,42 +27,46 @@ export default function NewUser() {
     }
   };
 
-  return (
-    <div className="createUserDiv">
-      <form
-        className="createUserForm"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Confirm Password:
-          <input
-            type="password"
-            name="confirmPassword"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Create Account</button>
-      </form>
-    </div>
-  );
+    return (
+        <div className="createUserPage">
+            <div className="createUserCard">
+                <h2>Create an Account</h2>
+
+                <form
+                    className="createUserForm"
+                    onSubmit={handleSubmit}
+                    autoComplete="off"
+                >
+                    <label>
+                        Username
+                        <input
+                            type="text"
+                            name="username"
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </label>
+
+                    <label>
+                        Password
+                        <input
+                            type="password"
+                            name="password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </label>
+
+                    <label>
+                        Confirm Password
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </label>
+
+                    <button type="submit">Create Account</button>
+                </form>
+            </div>
+        </div>
+    );
 }

@@ -3,7 +3,9 @@ export async function createUser(username: string, password: string) {
     const res = await fetch('/api/users/user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+          username: username,
+          password: password }),
     });
 
     const data = await res.json();
@@ -27,7 +29,7 @@ export async function loginUser(username: string, password: string) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      user: username,
+      username: username,
       password: password,
     }),
   });

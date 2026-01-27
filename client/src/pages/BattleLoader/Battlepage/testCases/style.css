@@ -1,40 +1,93 @@
 .testCaseContainer {
-  display: flex;
-  flex-direction: column;   /* stack the ul’s vertically */
-  align-items: center;      /* center them horizontally */
-  justify-content: center;  /* center them vertically if container has height */
-  gap: 1rem;                /* space between the lists */
-  height: 100%;             /* ensure it can center vertically */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
 }
 
-.testCaseContainer ul{
-  display: flex;
-  flex-direction: row; /* makes children (the <ul>s) stack vertically */
-  gap: 1rem; 
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+/* each UL is a "grid" of boxes */
+.list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
+/* each LI is a box */
+.testCase {
+    flex: 0 0 calc(20% - 12px); /* 5 per row */
+    box-sizing: border-box;
 
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.9);
 
-.list-container li{
-    float: left;
+    display: flex;
+    flex-direction: column;     /* stack lines */
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+
+    /* make long JSON not destroy layout */
+    overflow: hidden;
+
 }
 
-.testCase{
-  width: 15%;
-  padding: 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-.red{
-    background-color: red;
+/* remove float + weird row behavior */
+.testCaseContainer ul { /* keep if you want, but don't set row here */ }
+.list-container li { float: none; } /* or delete your float rule */
+
+/* text wrapping */
+.testCase p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.15rem;
+    width: 100%;
 }
 
-.green{
-    background-color: green;
+.tcInput {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.testCase p:not(.tcInput) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.testCase p code,
+.testCase p span {
+    overflow-wrap: anywhere;
+}
+
+.list-group-item-success.testCase {
+    border: 3px solid rgba(53, 161, 53, 0.9);
+    box-shadow: 0 0 0 2px rgba(53, 161, 53, 0.25), 0 6px 16px rgba(53, 161, 53, 0.25);
+    position: relative;
+}
+
+.list-group-item-danger.testCase {
+    border: 3px solid rgba(175, 51, 51, 0.9);
+    box-shadow: 0 0 0 2px rgba(175, 51, 51, 0.25), 0 6px 16px rgba(175, 51, 51, 0.25);
+    position: relative;
+}
+
+/* responsive */
+@media (max-width: 1200px) {
+    .testCase { flex-basis: calc(25% - 12px); } /* 4 per row */
+}
+@media (max-width: 900px) {
+    .testCase { flex-basis: calc(33.333% - 12px); } /* 3 per row */
+}
+@media (max-width: 650px) {
+    .testCase { flex-basis: calc(50% - 12px); } /* 2 per row */
+}
+@media (max-width: 420px) {
+    .testCase { flex-basis: 100%; } /* 1 per row */
 }

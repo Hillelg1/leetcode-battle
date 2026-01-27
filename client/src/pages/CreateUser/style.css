@@ -1,4 +1,5 @@
-.loginPage {
+/* Page background */
+.createUserPage {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -7,28 +8,30 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.loginCard {
+/* Card */
+.createUserCard {
     background: rgba(255, 255, 255, 0.95);
     padding: 2.5rem 3rem;
     border-radius: 14px;
-    width: 340px;
+    width: 360px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     animation: fadeIn 0.4s ease;
 }
 
-.loginCard h2 {
+.createUserCard h2 {
     margin-bottom: 1.5rem;
     text-align: center;
     color: #0f172a;
 }
 
-.loginForm {
+/* Form */
+.createUserForm {
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
 }
 
-.loginForm label {
+.createUserForm label {
     display: flex;
     flex-direction: column;
     font-size: 0.85rem;
@@ -36,7 +39,8 @@
     color: #334155;
 }
 
-.loginForm input {
+/* Inputs */
+.createUserForm input {
     margin-top: 0.35rem;
     padding: 0.6rem 0.75rem;
     font-size: 0.95rem;
@@ -46,12 +50,13 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.loginForm input:focus {
+.createUserForm input:focus {
     border-color: #6366f1;
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
 }
 
-.loginForm button {
+/* Button */
+.createUserForm button {
     margin-top: 1rem;
     padding: 0.7rem;
     font-size: 1rem;
@@ -64,16 +69,17 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.loginForm button:hover {
+.createUserForm button:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
 }
 
-.loginForm button:active {
+.createUserForm button:active {
     transform: translateY(0);
     box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
 }
 
+/* Subtle entrance animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -83,25 +89,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.loginFooter {
-    margin-top: 1.25rem;
-    text-align: center;
-    font-size: 0.85rem;
-    color: #475569;
-}
-
-.registerLink {
-    margin-left: 0.4rem;
-    background: none;
-    border: none;
-    color: #4f46e5;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
-}
-
-.registerLink:hover {
-    text-decoration: underline;
 }

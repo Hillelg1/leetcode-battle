@@ -68,6 +68,8 @@ public class BattleMatchService {
     public void finishMatch(String matchId, String sender){
         MatchesDTO match = userToMatches.get(sender);
         match.setDone(sender);
+        if(match.getP1().equals(sender))userToMatches.remove(match.getP1());
+        else userToMatches.remove(match.getP2());
         if (!match.bothDone())return;
         matches.remove(matchId);
         userToMatches.remove(match.getP1());

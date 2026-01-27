@@ -1,5 +1,6 @@
 package io.github.hillelgersten.leetcode_battle_backend.controller;
 
+import io.github.hillelgersten.leetcode_battle_backend.dto.UserDTO;
 import io.github.hillelgersten.leetcode_battle_backend.model.User;
 import io.github.hillelgersten.leetcode_battle_backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,16 @@ public class UserController{
     }
 
     @PostMapping("/user")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        if (repo.findByUsername(user.getUsername()).isPresent() || repo.findByUsername(user.getUsername().toLowerCase()).isPresent()) {
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDto) {
+        if (repo.findByUsername(userDto.getUsername()).isPresent() || repo.findByUsername(userDto.getUsername().toLowerCase()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Username already exists");
         }
+        User user = new User();
+        user.setUsername(user.getUsername().toLowerCase());
+        user.setPassword(user.getPassword());
+
         User savedUser = repo.save(user);
         return ResponseEntity.ok(savedUser);
     }
@@ -33,7 +38,9 @@ public class UserController{
         return repo.findAll();
     }
     @PostMapping("/fetchUser")
-    public User fetchUser(@RequestBody User user){
-        return repo.findByUsernameAndPassword(user.getUsername(), user.getPassword()).orElseThrow(() -> new RuntimeException("invalid username or password"));
+    public User fetchUser(@RequestBody UserDTO userDto){
+       User user = repo.findByUsernameAndPassword(userDto.getUsername().toLowerCase(), userDto.getPassword()).orElseThrow(() -> new RuntimeException("invalid username or password"));
+       System.out.println(user.getUsername());
+       return user;
     }
 }
