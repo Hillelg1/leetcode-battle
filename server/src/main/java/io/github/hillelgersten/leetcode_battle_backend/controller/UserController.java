@@ -33,10 +33,6 @@ public class UserController{
         return ResponseEntity.ok(savedUser);
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return repo.findAll();
-    }
     @PostMapping("/fetchUser")
     public User fetchUser(@RequestBody UserDTO userDto){
        User user = repo.findByUsernameAndPassword(userDto.getUsername().toLowerCase(), userDto.getPassword()).orElseThrow(() -> new RuntimeException("invalid username or password"));

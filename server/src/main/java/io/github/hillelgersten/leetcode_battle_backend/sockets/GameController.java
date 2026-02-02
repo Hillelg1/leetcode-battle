@@ -3,14 +3,11 @@ package io.github.hillelgersten.leetcode_battle_backend.sockets;
 import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.GameMessageDto;
 import io.github.hillelgersten.leetcode_battle_backend.service.BattleMatchService;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
-import jdk.jfr.Percentage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-
-import java.security.Principal;
 
 @Controller
 public class GameController {
@@ -27,14 +24,17 @@ public class GameController {
     @MessageMapping("/game/join")
     public void joinMatch(@Payload GameMessageDto message) {
         String user = message.getSender();
+        System.out.println("join received from:" + user);
         MatchesDTO match = battleMatchService.addToUserRoom(user);
         if(match!=null){
-            messagingTemplate.convertAndSend("/topic/match/" + user, match);
+            messagingTemplate.convertAndSend("/topic/match/" + match.getP1(), match);
+            messagingTemplate.convertAndSend("/topic/match/" + match.getP2(), match);
         }
     }
     @MessageMapping("/game/rejoin")
     public void rejoinMatch(@Payload GameMessageDto tryMatch){
         String user = tryMatch.getSender();
+        System.out.println("rejoin received from:" + user);
         MatchesDTO match = battleMatchService.checkForRejoin(user);
         if(match!=null){
             messagingTemplate.convertAndSend("/topic/match/"+user, match);

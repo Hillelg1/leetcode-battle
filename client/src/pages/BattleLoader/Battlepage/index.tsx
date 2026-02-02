@@ -17,7 +17,7 @@ interface BattlePageProps {
     onTimeOut?: () => void;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match}) => {
     if (!match.question) return <div>Question not found...</div>;
 
     const user = JSON.parse(localStorage.getItem("user") || "{}").username;
@@ -121,11 +121,9 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     }, [passedAll, onFinish, timeUp]);
 
     const determineStarterCode = () => {
-        console.log(match.p2Code);
         if (p1 === user && match.p1Code) setCode(match.p1Code);
         else if (p2 === user && match.p2Code) setCode(match.p2Code);
         else setCode(question.starterCode);
-
     };
 
     useEffect(() => {

@@ -51,6 +51,10 @@ public class LeetcodeQuestions {
         testCase.setQuestion(this);  // sync both sides
     }
 
+    public List<TestCases> getTestCases(){
+        return this.testCases;
+    }
+
     public void removeTestCase(TestCases testCase) {
         testCases.remove(testCase);
         testCase.setQuestion(null);  // break the link

@@ -1,6 +1,6 @@
 import type {Client} from "stompjs";
 
-const subscribe = (user:string, client:Client, matchId:String, setBattleState: (battleState: string) => void) =>{
+const subscribe = (user:string, client:Client, matchId:string, setBattleState: (battleState: string) => void) =>{
     return client.subscribe(`/topic/match/${matchId}`, (msg: any) => {
       console.log("subscribed");
       if (msg.body) {

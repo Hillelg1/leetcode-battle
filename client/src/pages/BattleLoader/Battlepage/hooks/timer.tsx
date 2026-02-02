@@ -3,11 +3,12 @@ import "./timer.css";
 
 interface TimerProps {
     initialSeconds: number;
+    won?: boolean;
     onComplete?: () => void;
     startTime: number; // epoch seconds from backend
 }
 
-const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) => {
+const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime, won = false }) => {
     const completedRef = useRef(false);
     const onCompleteRef = useRef(onComplete);
     const computeRemaining = useMemo(() => {
@@ -21,6 +22,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) 
     const [seconds, setSeconds] = useState<number>(() => computeRemaining());
 
     useEffect(() => {
+        if (won) return;
         completedRef.current = false;
 
         const tick = () => {
@@ -36,7 +38,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) 
         tick(); // update immediately on mount/refresh
         const interval = setInterval(tick, 1000);
         return () => clearInterval(interval);
-    }, [computeRemaining]);
+    }, [computeRemaining,won]);
 
     const tenSec = seconds <= 10;
 
@@ -50,7 +52,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime }) 
 
     return (
         <div>
-            <p className={tenSec ? "tenSeconds" : ""}>{formatTime(seconds)}</p>
+            <p className={`${tenSec ? "tenSeconds" : ""}, ${won ? "won" : ""}`}>{formatTime(seconds)}</p>
         </div>
     );
 };
