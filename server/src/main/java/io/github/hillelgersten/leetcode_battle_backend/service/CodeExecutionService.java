@@ -45,6 +45,7 @@ public class CodeExecutionService {
             }
         }).collect(Collectors.toList());
 
+        System.out.println("test cases mapped to JSON");
         // 3. Build request payload
         Map<String, Object> request = new HashMap<>();
         request.put("userCode", submission.getUserCode());
@@ -52,6 +53,7 @@ public class CodeExecutionService {
 
         // 4. Call runner service
         try {
+            System.out.println("sending request to runner");
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
             System.out.println(result);
             return result;
