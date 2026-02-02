@@ -36,7 +36,8 @@ public class BattleMatchService {
                 String p2 = this.waitingRoom.poll();
 
                 try {
-                    Optional<LeetcodeQuestions> optionalQuestion = repo.findById(1L);
+
+                    Optional<LeetcodeQuestions> optionalQuestion = repo.getRandomQuestion();
                     if(optionalQuestion.isPresent()){
                         MatchesDTO match = new MatchesDTO();
                         LeetcodeQuestions question = optionalQuestion.get();

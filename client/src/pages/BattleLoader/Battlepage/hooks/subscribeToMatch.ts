@@ -1,6 +1,6 @@
 import type {Client} from "stompjs";
 
-const subscribe = (user:string, client:Client, matchId:String, setBattleState: (battleState: string) => void) =>{
+const subscribe = (user:string, client:Client, matchId:string, setBattleState: (battleState: string) => void) =>{
     return client.subscribe(`/topic/match/${matchId}`, (msg: any) => {
       console.log("subscribed");
       if (msg.body) {
@@ -11,7 +11,7 @@ const subscribe = (user:string, client:Client, matchId:String, setBattleState: (
           } else if (Match.type === "FINISH") {
               setBattleState("WON") //User sent finish message
           } else if (Match.type === "QUIT" && !isMe) {
-              setBattleState("QUIT") //user wants out
+              setBattleState("QUIT") //opponent wants out
           } else if (Match.type === "QUIT") {
               setBattleState("QUITTER")
           }

@@ -26,14 +26,14 @@ public class CodeExecutionService {
     }
 
     public String runSubmission(SubmissionDto submission) {
-        System.out.println(submission.getUserCode());
+        System.out.println("fetching test cases");
         // 1. Fetch test cases from DB
         List<TestCases> cases = testCasesRepository.findByQuestionId(submission.getQuestionId());
+        System.out.println("test cases fetched from DB");
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("No test cases found for question " + submission.getQuestionId());
         }
-        System.out.println(cases);
-
+        System.out.println("mapping test cases to JSON");
         // 2. Transform test cases into JSON-ready objects
         List<Map<String, Object>> payload = cases.stream().map(tc -> {
             try {
@@ -45,6 +45,7 @@ public class CodeExecutionService {
             }
         }).collect(Collectors.toList());
 
+        System.out.println("test cases mapped to JSON");
         // 3. Build request payload
         Map<String, Object> request = new HashMap<>();
         request.put("userCode", submission.getUserCode());
@@ -52,6 +53,7 @@ public class CodeExecutionService {
 
         // 4. Call runner service
         try {
+            System.out.println("sending request to runner");
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
             System.out.println(result);
             return result;
