@@ -38,7 +38,7 @@ const Timer: React.FC<TimerProps> = ({ initialSeconds, onComplete, startTime, wo
         tick(); // update immediately on mount/refresh
         const interval = setInterval(tick, 1000);
         return () => clearInterval(interval);
-    }, [computeRemaining,won]);
+    }, [computeRemaining]);
 
     const tenSec = seconds <= 10;
 

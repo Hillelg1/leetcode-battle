@@ -11,7 +11,7 @@ const subscribe = (user:string, client:Client, matchId:string, setBattleState: (
           } else if (Match.type === "FINISH") {
               setBattleState("WON") //User sent finish message
           } else if (Match.type === "QUIT" && !isMe) {
-              setBattleState("QUIT") //user wants out
+              setBattleState("QUIT") //opponent wants out
           } else if (Match.type === "QUIT") {
               setBattleState("QUITTER")
           }

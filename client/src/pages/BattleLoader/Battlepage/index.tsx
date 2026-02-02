@@ -100,10 +100,11 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
 
     useEffect(() => {
         if (battleState === "LOST") alert("opponent solved all test cases");
+        if (battleState == "OPTIMEOUT") alert("Opponent timed out!");
         if (battleState === "WON") alert("Solved all testcases!");
         if (battleState === "QUIT") alert("opponent quit!");
         if (battleState === "TIMEOUT") alert("Time is up!");
-        if (battleState == "OPTIMEOUT") alert("Opponent timed out!");
+
     }, [battleState]);
 
     const timeOut = () => {
@@ -124,6 +125,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
         if (p1 === user && match.p1Code) setCode(match.p1Code);
         else if (p2 === user && match.p2Code) setCode(match.p2Code);
         else setCode(question.starterCode);
+
     };
 
     useEffect(() => {

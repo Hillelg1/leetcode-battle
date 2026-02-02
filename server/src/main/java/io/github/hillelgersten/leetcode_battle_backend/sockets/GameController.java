@@ -24,7 +24,6 @@ public class GameController {
     @MessageMapping("/game/join")
     public void joinMatch(@Payload GameMessageDto message) {
         String user = message.getSender();
-        System.out.println("join received from:" + user);
         MatchesDTO match = battleMatchService.addToUserRoom(user);
         if(match!=null){
             messagingTemplate.convertAndSend("/topic/match/" + match.getP1(), match);
@@ -34,7 +33,6 @@ public class GameController {
     @MessageMapping("/game/rejoin")
     public void rejoinMatch(@Payload GameMessageDto tryMatch){
         String user = tryMatch.getSender();
-        System.out.println("rejoin received from:" + user);
         MatchesDTO match = battleMatchService.checkForRejoin(user);
         if(match!=null){
             messagingTemplate.convertAndSend("/topic/match/"+user, match);
