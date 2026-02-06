@@ -13,4 +13,6 @@ public interface LeetcodeQuestionRepository extends JpaRepository<LeetcodeQuesti
 
     @Query(value = "SELECT * FROM leetcode_questions ORDER BY RAND() LIMIT 1", nativeQuery = true)
     Optional<LeetcodeQuestions> getRandomQuestion();
+
+    Optional<LeetcodeQuestions>  findTopByOrderByIdDesc();
 }

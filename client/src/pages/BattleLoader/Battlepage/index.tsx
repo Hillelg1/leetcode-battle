@@ -15,9 +15,10 @@ interface BattlePageProps {
     onQuit?: () => void;
     client: any;
     onTimeOut?: () => void;
+    disconnect: () => void;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match}) => {
+const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match, disconnect}) => {
     if (!match.question) return <div>Question not found...</div>;
 
     const user = JSON.parse(localStorage.getItem("user") || "{}").username;
@@ -36,6 +37,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const [timeUp, setTimeUp] = useState(false);
     const [passedAll, setPassedAll] = useState(false);
     const [battleState, setBattleState] = useState("BATTLE");
+    const [won, setWon] = useState(false);
 
     const isLocked = timeUp || passedAll;
 
@@ -94,7 +96,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
 
     useEffect(() => {
         if (!client || !matchId) return;
-        const subscription = subscribe(user, client, matchId, setBattleState);
+        const subscription = subscribe(user, client, matchId, setBattleState, disconnect);
         return () => subscription.unsubscribe();
     }, [client, matchId, user]);
 
@@ -119,6 +121,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
             onFinish();
             setTimeUp(true);
         }
+        if (passedAll)setWon(true);
     }, [passedAll, onFinish, timeUp]);
 
     const determineStarterCode = () => {
@@ -141,8 +144,8 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
                     Submit
                 </button>
 
-                {questionId && Number.isFinite(startedAt) && (
-                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} />
+                {questionId && (
+                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} won = {won} />
                 )}
             </div>
 

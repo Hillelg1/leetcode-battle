@@ -2,6 +2,8 @@ package io.github.hillelgersten.leetcode_battle_backend.dto;
 
 import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.MessageType;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class MatchesDTO {
     private String matchId;
     private String p1;
@@ -15,8 +17,8 @@ public class MatchesDTO {
 
     private long startTime;
 
-    private boolean p1Done = false;
-    private boolean p2Done = false;
+    private final AtomicBoolean p1Done = new AtomicBoolean(false);
+    private final AtomicBoolean p2Done = new AtomicBoolean(false);
 
 
     public MatchesDTO() {
@@ -80,11 +82,13 @@ public class MatchesDTO {
     public String getP2Code() {return p2Code;}
     public void setP2Code(String p2Code) {this.p2Code = p2Code;}
 
-    public void setDone(String sender){
-        if(sender.equals(p1)) p1Done = true;
-        else p2Done = true;
+    public void setDone(String user) {
+        if (user.equals(p1)) p1Done.set(true);
+        else if (user.equals(p2)) p2Done.set(true);
     }
 
-    public boolean bothDone(){return p1Done && p2Done;}
+    public boolean bothDone() {
+        return p1Done.get() && p2Done.get();
+    }
 
 }

@@ -41,23 +41,23 @@ public class BattleMatchService {
 
             this.waitingRoom.add(user);
             System.out.println(waitingRoom);
-            if(this.waitingRoom.size() >= 2 && this.userToMatches.size() >= 2){
-                String p1 = this.waitingRoom.poll();
-                String p2 = this.waitingRoom.poll();
-                waitingUsers.remove(p1);
-                waitingUsers.remove(p2);
+                String p1 = waitingRoom.poll();
+                String p2 = waitingRoom.poll();
 
-                if(p1 == null || p2 == null){
-                    if(p2 == null) {
-                        this.waitingRoom.add(p1);
-                        this.waitingUsers.add(p1);
+                if (p1 == null || p2 == null) {
+                    if (p1 != null) {
+                        waitingRoom.add(p1);
+                        waitingUsers.add(p1);
                     }
-                    if(p1 == null) {
-                        this.waitingRoom.add(p2);
-                        this.waitingUsers.add(p2);
+                    if (p2 != null) {
+                        waitingRoom.add(p2);
+                        waitingUsers.add(p2);
                     }
                     return null;
                 }
+
+                waitingUsers.remove(p1);
+                waitingUsers.remove(p2);
 
                 try {
 
@@ -86,22 +86,26 @@ public class BattleMatchService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }
         return null;
     }
 
-    public void finishMatch(String matchId, String sender){
+    public void finishMatch(String matchId, String sender) {
         MatchesDTO match = userToMatches.get(sender);
-        if(match == WAITING || match == null)return;
+        if (match == null || match == WAITING) return;
+
+        // Mark sender as done
         match.setDone(sender);
-        if(match.getP1().equals(sender))userToMatches.remove(match.getP1());
-        else userToMatches.remove(match.getP2());
-        if (!match.bothDone())return;
-        matches.remove(matchId);
+
+        // Free THIS user immediately
+        userToMatches.remove(sender);
+
+        if (match.bothDone()) {
+            matches.remove(matchId);
+        }
     }
 
     public MatchesDTO checkForRejoin(String userName){
-        return userToMatches.get(userName);
+        return userToMatches.get(userName) == WAITING ? null : userToMatches.get(userName);
     }
 
     public void storeCode(StoreCodeDTO code){

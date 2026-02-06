@@ -46,10 +46,9 @@ public class GameController {
 
     @MessageMapping("/game/finish")
     public void finishMatch(@Payload GameMessageDto match) {
-        System.out.println("finish received from:" + match.getSender());
+        System.out.println(match.getType() + ": received from:" + match.getSender());
         battleMatchService.finishMatch(match.getMatchId(), match.getSender());
         System.out.println(match.toString());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }
-
 }

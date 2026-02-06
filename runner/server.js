@@ -33,7 +33,7 @@ app.post("/run", (req, res) => {
     const results = testCases.map((tc, index) => {
       const args = Object.values(tc.input);
       try {
-        const output = solution(...args);
+        const output = solution(...JSON.parse(JSON.stringify(args)));
         const passed = deepEqual(output, tc.expected);
         passedAll = passedAll && passed;
 
