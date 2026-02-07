@@ -17,6 +17,12 @@ public class MatchesDTO {
 
     private long startTime;
 
+    private long p1endTime;
+    private long p2endTime;
+
+    private int p1AmountFinished;
+    private int p2AmountFinished;
+
     private final AtomicBoolean p1Done = new AtomicBoolean(false);
     private final AtomicBoolean p2Done = new AtomicBoolean(false);
 
@@ -87,6 +93,31 @@ public class MatchesDTO {
         else if (user.equals(p2)) p2Done.set(true);
     }
 
+    public void setP1endTime(long endTime) {
+        this.p1endTime = endTime;
+    }
+    public void setP2endTime(long endTime) {
+        this.p2endTime = endTime;
+    }
+    public long getP1endTime() {
+        return p1endTime;
+    }
+    public long getP2endTime() {
+        return p2endTime;
+    }
+
+    public void setP1AmountFinished(int p1AmountFinished) {
+        this.p1AmountFinished = p1AmountFinished;
+    }
+    public int getP1AmountFinished() {
+        return p1AmountFinished;
+    }
+    public void setP2AmountFinished(int p2AmountFinished) {
+        this.p2AmountFinished = p2AmountFinished;
+    }
+    public int getP2AmountFinished() {
+        return p2AmountFinished;
+    }
     public boolean bothDone() {
         return p1Done.get() && p2Done.get();
     }

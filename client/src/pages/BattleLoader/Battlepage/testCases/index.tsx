@@ -4,8 +4,6 @@ import './style.css'
 export type testCase = {
     'case': number;
     'input': {
-        'nums': any[],
-        'target': number
     };
     'expected': [];
     'output': [];

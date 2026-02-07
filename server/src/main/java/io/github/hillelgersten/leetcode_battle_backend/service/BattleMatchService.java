@@ -104,6 +104,20 @@ public class BattleMatchService {
         }
     }
 
+    public void setTestCasesCompleted(String sender, int amount){
+        MatchesDTO match = userToMatches.get(sender);
+        if (match == null || match == WAITING) return;
+        if (match.getP1().equals(sender))match.setP1AmountFinished(amount);
+        else match.setP2AmountFinished(amount);
+    }
+
+    public void setEndTime(String sender, long endTime){
+        MatchesDTO match = userToMatches.get(sender);
+        if (match == null || match == WAITING) return;
+        if (match.getP1().equals(sender)) match.setP1endTime(endTime);
+        else match.setP2endTime(endTime);
+    }
+
     public MatchesDTO checkForRejoin(String userName){
         return userToMatches.get(userName) == WAITING ? null : userToMatches.get(userName);
     }

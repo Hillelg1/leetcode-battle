@@ -30,12 +30,14 @@ app.post("/run", (req, res) => {
     const { solution } = require(codeFile);
 
     let passedAll = true;
+    let amountPassed = 0;
     const results = testCases.map((tc, index) => {
       const args = Object.values(tc.input);
       try {
         const output = solution(...JSON.parse(JSON.stringify(args)));
         const passed = deepEqual(output, tc.expected);
         passedAll = passedAll && passed;
+        amountPassed += passed ? 1 : 0;
 
         return {
           case: index + 1,
@@ -58,7 +60,7 @@ app.post("/run", (req, res) => {
     });
 
     // Send structured results back
-    return res.json({ results, passedAll });
+    return res.json({ results, passedAll, amountPassed });
   } catch (err) {
     console.error("Execution error:", err);
     return res.status(500).json({ error: String(err) });

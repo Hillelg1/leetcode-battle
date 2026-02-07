@@ -2,6 +2,7 @@ package io.github.hillelgersten.leetcode_battle_backend.repository;
 
 import io.github.hillelgersten.leetcode_battle_backend.model.MatchHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +30,7 @@ public interface MatchHistoryRepository extends JpaRepository<MatchHistory, Long
      * Optional: most recent matches first (useful for profile/history pages)
      */
     List<MatchHistory> findTop20ByP1OrP2OrderByIdDesc(String p1, String p2);
+
+    @Query(value = "Select * from match_history MH where MH.p1 = username or MH.p2 = username", nativeQuery = true)
+    public List<Optional<MatchHistory>> getByUsername(String username);
 }

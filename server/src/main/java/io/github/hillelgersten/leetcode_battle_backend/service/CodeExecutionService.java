@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hillelgersten.leetcode_battle_backend.dto.SubmissionDto;
 import io.github.hillelgersten.leetcode_battle_backend.model.TestCases;
 import io.github.hillelgersten.leetcode_battle_backend.repository.TestCasesRepository;
+import io.github.hillelgersten.leetcode_battle_backend.service.BattleMatchService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,12 +16,16 @@ import java.util.stream.Collectors;
 public class CodeExecutionService {
 
     private final TestCasesRepository testCasesRepository;
+
+    private final BattleMatchService  battleMatchService;
     private final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
     private final String runnerUrl;
 
-    public CodeExecutionService(TestCasesRepository testCasesRepository) {
+    public CodeExecutionService(TestCasesRepository testCasesRepository, BattleMatchService battleMatchService) {
         this.testCasesRepository = testCasesRepository;
+        this.battleMatchService = battleMatchService;
+
         // Pull runner URL from env, fallback if not provided
         this.runnerUrl = System.getenv().getOrDefault("RUNNER_URL", "http://runner:4000");
     }
