@@ -1,8 +1,9 @@
 package io.github.hillelgersten.leetcode_battle_backend.sockets;
 
-import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.GameMessageDto;
+import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.FinishMatchDTO;
 import io.github.hillelgersten.leetcode_battle_backend.service.BattleMatchService;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
+import io.github.hillelgersten.leetcode_battle_backend.sockets.dto.GameMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -31,7 +32,7 @@ public class GameController {
         }
     }
     @MessageMapping("/game/rejoin")
-    public void rejoinMatch(@Payload GameMessageDto tryMatch){
+    public void rejoinMatch(@Payload io.github.hillelgersten.leetcode_battle_backend.sockets.dto.GameMessageDto tryMatch){
         String user = tryMatch.getSender();
         MatchesDTO match = battleMatchService.checkForRejoin(user);
         if(match!=null){
@@ -45,9 +46,9 @@ public class GameController {
     }
 
     @MessageMapping("/game/finish")
-    public void finishMatch(@Payload GameMessageDto match) {
+    public void finishMatch(@Payload FinishMatchDTO match) {
         System.out.println(match.getType() + ": received from:" + match.getSender());
-        battleMatchService.finishMatch(match.getMatchId(), match.getSender());
+        battleMatchService.finishMatch(match.getMatchId(), match.getSender(), match.getEndTime());
         System.out.println(match.toString());
         messagingTemplate.convertAndSend("/topic/match/" + match.getMatchId(), match);
     }

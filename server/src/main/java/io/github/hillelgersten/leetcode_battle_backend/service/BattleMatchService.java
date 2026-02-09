@@ -26,8 +26,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Service
 public class BattleMatchService {
 
-    @Autowired
-    private LeetcodeQuestionRepository repo;
+
+    private final LeetcodeQuestionRepository repo;
+    private final MatchHistoryService matchHistoryService;
+
+    public BattleMatchService(LeetcodeQuestionRepository repo, MatchHistoryService matchHistoryService) {
+        this.repo = repo;
+        this.matchHistoryService = matchHistoryService;
+    }
+
+
 
     private final Queue<String> waitingRoom = new ConcurrentLinkedQueue<>();
     ConcurrentHashMap<String, MatchesDTO> matches = new ConcurrentHashMap<>();
@@ -69,7 +77,8 @@ public class BattleMatchService {
                                 question.getId(),
                                 question.getDescription(),
                                 question.getExample(),
-                                question.getStarterCode()
+                                question.getStarterCode(),
+                                question.getTitle()
                         );
                         match.setP1(p1);
                         match.setP2(p2);
@@ -89,7 +98,7 @@ public class BattleMatchService {
         return null;
     }
 
-    public void finishMatch(String matchId, String sender) {
+    public void finishMatch(String matchId, String sender, long endTime) {
         MatchesDTO match = userToMatches.get(sender);
         if (match == null || match == WAITING) return;
 
@@ -98,17 +107,24 @@ public class BattleMatchService {
 
         // Free THIS user immediately
         userToMatches.remove(sender);
-
+        setEndTime(sender,endTime);
         if (match.bothDone()) {
             matches.remove(matchId);
+            matchHistoryService.createNewMatchHistory(match);
         }
     }
 
     public void setTestCasesCompleted(String sender, int amount){
         MatchesDTO match = userToMatches.get(sender);
         if (match == null || match == WAITING) return;
-        if (match.getP1().equals(sender))match.setP1AmountFinished(amount);
-        else match.setP2AmountFinished(amount);
+        if (match.getP1().equals(sender)) {
+            if (match.getP1AmountFinished() >= amount) return;
+            match.setP1AmountFinished(amount);
+        }
+        else{
+           if (match.getP2AmountFinished() >= amount) return;
+           match.setP2AmountFinished(amount);
+        }
     }
 
     public void setEndTime(String sender, long endTime){

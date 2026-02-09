@@ -52,12 +52,13 @@ export async function createTestCases(questionId: number,input: String, output: 
 }
 
 export async function runCode(questionId: number, userCode: string){
-  console.log(userCode);  
+  console.log(userCode);
+  const userName: string = JSON.parse(localStorage.getItem("user") || "{}").username;
   try{
     const res = await fetch('api/code/submit',{
       method: 'POST',
       headers: {'Content-type': 'application/json'},
-      body: JSON.stringify({questionId, userCode})
+      body: JSON.stringify({questionId, userCode, userName})
     });
     return res.json();
   }

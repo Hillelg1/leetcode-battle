@@ -60,6 +60,8 @@ public class CodeExecutionService {
         try {
             System.out.println("sending request to runner");
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
+            int amountPassed = mapper.readTree(result).get("amountPassed").asInt();
+            battleMatchService.setTestCasesCompleted(submission.getUserName(), amountPassed);
             System.out.println(result);
             return result;
         } catch (Exception e) {

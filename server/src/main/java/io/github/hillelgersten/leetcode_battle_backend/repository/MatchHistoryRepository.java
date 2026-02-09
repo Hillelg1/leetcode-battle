@@ -31,6 +31,6 @@ public interface MatchHistoryRepository extends JpaRepository<MatchHistory, Long
      */
     List<MatchHistory> findTop20ByP1OrP2OrderByIdDesc(String p1, String p2);
 
-    @Query(value = "Select * from match_history MH where MH.p1 = username or MH.p2 = username", nativeQuery = true)
+    @Query(value = "Select * from match_history MH where MH.p1 = :username or MH.p2 = :username", nativeQuery = true)
     public List<Optional<MatchHistory>> getByUsername(String username);
 }
