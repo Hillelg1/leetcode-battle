@@ -104,10 +104,10 @@ public class BattleMatchService {
 
         // Mark sender as done
         match.setDone(sender);
+        setEndTime(sender,endTime);
 
         // Free THIS user immediately
         userToMatches.remove(sender);
-        setEndTime(sender,endTime);
         if (match.bothDone()) {
             matches.remove(matchId);
             matchHistoryService.createNewMatchHistory(match);
@@ -128,8 +128,10 @@ public class BattleMatchService {
     }
 
     public void setEndTime(String sender, long endTime){
+        System.out.println(sender);
         MatchesDTO match = userToMatches.get(sender);
         if (match == null || match == WAITING) return;
+        System.out.println(endTime);
         if (match.getP1().equals(sender)) match.setP1endTime(endTime);
         else match.setP2endTime(endTime);
     }
