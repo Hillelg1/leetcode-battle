@@ -28,6 +28,7 @@ export default function Layout() {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
               <li className="nav-item"><Link className="nav-link" to="/battle">Battle</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/history">History</Link></li>
               <li className="nav-item"><Link className="nav-link" to="/leaderboard">Leaderboard</Link></li>
               {admin && (
                 <li className="nav-item">

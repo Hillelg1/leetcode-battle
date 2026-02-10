@@ -31,6 +31,7 @@ public class CodeExecutionService {
     }
 
     public String runSubmission(SubmissionDto submission) {
+        System.out.println("running submission with submit time: " + submission.getTimestamp());
         System.out.println("fetching test cases");
         // 1. Fetch test cases from DB
         List<TestCases> cases = testCasesRepository.findByQuestionId(submission.getQuestionId());
@@ -61,7 +62,7 @@ public class CodeExecutionService {
             System.out.println("sending request to runner");
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
             int amountPassed = mapper.readTree(result).get("amountPassed").asInt();
-            battleMatchService.setTestCasesCompleted(submission.getUserName(), amountPassed);
+            battleMatchService.setTestCasesCompleted(submission.getUserName(), amountPassed,submission.getTimestamp());
             System.out.println(result);
             return result;
         } catch (Exception e) {

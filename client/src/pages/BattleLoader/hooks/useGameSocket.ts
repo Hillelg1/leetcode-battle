@@ -73,7 +73,7 @@ export function useGameSocket({ onMatchReceived, username}: UseGameSocketProps) 
           stompClientRef.current.send(
               "/app/game/finish",
               {},
-              JSON.stringify({ matchId: matchId, type: type, sender: usernameScoped, endTime: Date.now()})
+              JSON.stringify({ matchId: matchId, type: type, sender: usernameScoped})
           );
       }
   };

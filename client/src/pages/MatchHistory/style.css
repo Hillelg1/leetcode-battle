@@ -1,0 +1,83 @@
+/* MatchHistoryPage.css */
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.match-history-page {
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+}
+
+.match-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 8px;
+    padding-bottom: 30px;
+}
+
+.match-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 14px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.match-card:hover {
+    background: #f9f9f9;
+    transform: scale(1.01);
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.question {
+    font-weight: 600;
+}
+
+.result.win {
+    color: green;
+}
+
+.result.loss {
+    color: red;
+}
+
+.result.draw {
+    color: gray;
+}
+
+.player-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.player-label {
+    font-weight: 600;
+}
+
+.player-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.player-row.you {
+    color: #1a73e8;
+}
+
+.player-row.opponent {
+    color: #444;
+}

@@ -98,13 +98,12 @@ public class BattleMatchService {
         return null;
     }
 
-    public void finishMatch(String matchId, String sender, long endTime) {
+    public void finishMatch(String matchId, String sender) {
         MatchesDTO match = userToMatches.get(sender);
         if (match == null || match == WAITING) return;
 
         // Mark sender as done
         match.setDone(sender);
-        setEndTime(sender,endTime);
 
         // Free THIS user immediately
         userToMatches.remove(sender);
@@ -114,16 +113,18 @@ public class BattleMatchService {
         }
     }
 
-    public void setTestCasesCompleted(String sender, int amount){
+    public void setTestCasesCompleted(String sender, int amount, long endTime){
         MatchesDTO match = userToMatches.get(sender);
         if (match == null || match == WAITING) return;
         if (match.getP1().equals(sender)) {
             if (match.getP1AmountFinished() >= amount) return;
             match.setP1AmountFinished(amount);
+            setEndTime(sender,endTime);
         }
         else{
            if (match.getP2AmountFinished() >= amount) return;
            match.setP2AmountFinished(amount);
+            setEndTime(sender,endTime);
         }
     }
 

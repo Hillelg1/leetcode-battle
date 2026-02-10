@@ -27,7 +27,9 @@ public class MatchHistoryService {
     }
 
     public String formatTime(long end, long start, long duration) {
-        System.out.println(end);
+        System.out.println("END: " + end);
+        System.out.println("START: " + start);
+        System.out.println("END - START: " + (end - start));
         long elapsed = Math.max(0, end - start);
         long seconds = Math.min(elapsed, duration);
 

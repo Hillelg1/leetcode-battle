@@ -6,7 +6,7 @@ public class FinishMatchDTO {
         private String payload;  // optional, e.g. code results
         private String matchId;
 
-        private long endTime;
+
 
         public String getSender() { return sender; }
         public void setSender(String sender) { this.sender = sender; }
@@ -28,10 +28,4 @@ public class FinishMatchDTO {
             return "sender: " + sender + " type: " + type + " MatchId: " + matchId;
         }
 
-        public long getEndTime() {
-            return endTime;
-        }
-        public void setEndTime(long endTime) {
-            this.endTime = endTime;
-        }
 }
