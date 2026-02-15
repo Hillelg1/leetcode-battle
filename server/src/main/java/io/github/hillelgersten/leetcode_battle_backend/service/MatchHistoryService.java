@@ -1,4 +1,5 @@
 package io.github.hillelgersten.leetcode_battle_backend.service;
+import io.github.hillelgersten.leetcode_battle_backend.dto.MatchHistoryDTO;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
 import io.github.hillelgersten.leetcode_battle_backend.model.MatchHistory;
@@ -59,5 +60,22 @@ public class MatchHistoryService {
         matchHistory.setQuestionTitle(match.getQuestion().getTitle());
         saveMatchHistory(matchHistory);
     }
+
+    public void deleteAllMatchHistory(){
+        matchHistoryRepository.deleteAll();
+    }
+
+    public List<Optional<MatchHistory>> getAllwins(String userName){
+        return matchHistoryRepository.getWinCountForUser(userName);
+    }
+
+    public List<Optional<MatchHistory>> getAllLoses(String userName){
+        return matchHistoryRepository.getLossCountForUser(userName);
+    }
+
+    public MatchHistoryDTO createMatchHistoryDTO(String username) {
+        return new MatchHistoryDTO(getAllwins(username), getAllLoses(username));
+    }
+
 
 }

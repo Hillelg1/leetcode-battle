@@ -1,35 +1,24 @@
-/* MatchHistoryPage.css */
-
-html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-}
-
-.match-history-page {
-    height: calc(100vh - 64px);
+.match-history-controls {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    overflow: hidden;
+    align-items: center;      /* centers everything */
+    gap: 14px;
+    margin: 10px 0 18px;
 }
 
-.match-list {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-right: 8px;
-    padding-bottom: 30px;
-}
-
+/* Big centered stats row */
 .match-card {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 14px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
+
+    height: 120px;              /* <- choose your preferred fixed height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
 }
 
 .match-card:hover {
@@ -37,47 +26,116 @@ html, body {
     transform: scale(1.01);
 }
 
+/* Header stays one “row”, doesn’t grow */
 .match-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 8px;
 }
 
+.match-history-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.match-history-summary {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    width: 100%;
+}
+
+.match-history-summary span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    padding: 12px 18px;
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    background: #fafafa;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.match-history-summary span::before {
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.65;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+}
+
+/* Clamp long question titles so they don’t stretch the card */
 .question {
     font-weight: 600;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* 1 = tighter, 2 = nicer */
+    -webkit-box-orient: vertical;
 }
 
-.result.win {
-    color: green;
+/* Make result badge fixed-width so it doesn’t change layout */
+.result {
+    min-width: 60px;
+    text-align: right;
+    font-weight: 700;
 }
 
-.result.loss {
-    color: red;
-}
-
-.result.draw {
-    color: gray;
+/* Body should have a stable 2-row layout */
+.match-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .player-row {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    align-items: center;
+    padding: 2px 0;
 }
 
-.player-label {
-    font-weight: 600;
-}
-
+/* Keep stats aligned and prevent wrapping */
 .player-stats {
     display: flex;
     gap: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.player-row.you {
-    color: #1a73e8;
+/* Optional: keep Time from being insanely long */
+.player-stats span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;            /* adjust if needed */
 }
 
-.player-row.opponent {
-    color: #444;
+
+/* Buttons slightly larger + smoother */
+.toggle-btn {
+    padding: 9px 14px;
+    border: 1px solid #222;
+    border-radius: 12px;
+    background: #2b2b2b;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.toggle-btn.active {
+    background: #111;
+    border-color: #111;
+}
+
+.toggle-btn:hover {
+    background: #1f1f1f;
 }

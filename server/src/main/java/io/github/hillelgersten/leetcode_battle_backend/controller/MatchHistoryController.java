@@ -1,10 +1,8 @@
 package io.github.hillelgersten.leetcode_battle_backend.controller;
 
+import io.github.hillelgersten.leetcode_battle_backend.dto.MatchHistoryDTO;
 import io.github.hillelgersten.leetcode_battle_backend.model.MatchHistory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import io.github.hillelgersten.leetcode_battle_backend.service.MatchHistoryService;
 
 import java.util.List;
@@ -18,8 +16,14 @@ public class MatchHistoryController {
         this.matchHistoryService = matchHistoryService;
     }
     @GetMapping("/{username}")
-    public List<Optional<MatchHistory>> getMatchHistory(@PathVariable String username) {
+    public MatchHistoryDTO getMatchHistory(@PathVariable String username) {
         System.out.println("Getting match history for user: " + username);
-        return matchHistoryService.findByUserName(username);
+        return matchHistoryService.createMatchHistoryDTO(username);
     }
+
+    @DeleteMapping("/History")
+    public void deleteHistory(){
+        matchHistoryService.deleteAllMatchHistory();
+    }
+
 }

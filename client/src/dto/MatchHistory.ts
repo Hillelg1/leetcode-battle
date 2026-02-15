@@ -14,3 +14,11 @@ export interface MatchHistory {
     p1FinishedAt: string;
     p2FinishedAt: string;
 }
+
+export type MatchHistoryDTO = {
+    wins: Array<MatchHistory | null>;
+    loses: Array<MatchHistory | null>;
+    winCount: number;
+    lossCount: number;
+    totalMatches: number;
+};

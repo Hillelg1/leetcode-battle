@@ -2,6 +2,7 @@ package io.github.hillelgersten.leetcode_battle_backend.repository;
 
 import io.github.hillelgersten.leetcode_battle_backend.model.MatchHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -33,4 +34,17 @@ public interface MatchHistoryRepository extends JpaRepository<MatchHistory, Long
 
     @Query(value = "Select * from match_history MH where MH.p1 = :username or MH.p2 = :username", nativeQuery = true)
     public List<Optional<MatchHistory>> getByUsername(String username);
+
+    @Query(value = "Select * from match_history MH where MH.won = :username", nativeQuery = true)
+    public List<Optional<MatchHistory>> getWinCountForUser(String username);
+
+    @Query(value = "Select * from match_history MH where MH.p1 = :username or MH.p2 = :username and MH.won != :username", nativeQuery = true)
+    public List<Optional<MatchHistory>> getLossCountForUser(String username);
+
+    @Modifying
+    @Query(value = "TRUNCATE TABLE match_history", nativeQuery = true)
+    public void deleteAll();
+
+
+
 }
