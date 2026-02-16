@@ -24,6 +24,9 @@ public class LeetcodeQuestions {
     @Column(columnDefinition="TEXT")
     private String starterCode;
 
+    @Column(columnDefinition="TEXT")
+    private String solutionVideoUrl;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<TestCases> testCases = new ArrayList<>();
@@ -58,5 +61,12 @@ public class LeetcodeQuestions {
     public void removeTestCase(TestCases testCase) {
         testCases.remove(testCase);
         testCase.setQuestion(null);  // break the link
+    }
+
+    public void setSolutionVideoUrl(String solutionVideoUrl) {
+        this.solutionVideoUrl = solutionVideoUrl;
+    }
+    public String getSolutionVideoUrl() {
+        return solutionVideoUrl;
     }
 }

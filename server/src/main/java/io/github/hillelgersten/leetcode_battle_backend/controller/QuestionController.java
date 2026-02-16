@@ -58,5 +58,11 @@ public class QuestionController {
     public List<LeetcodeQuestions> allQuestions() {
         return repo.findAll();
     }
+
+    @PutMapping("/insertSolution")
+    public ResponseEntity<Void> insertSolution(@RequestParam String solution, @RequestParam Long id){
+        int res = repo.updateSolutionVideoUrl(solution, id);
+        return res == 1 ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }
 

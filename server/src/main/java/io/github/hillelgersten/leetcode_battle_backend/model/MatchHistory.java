@@ -107,15 +107,6 @@ public class MatchHistory {
     public void setWon(String won) {
         this.won = won;
     }
-
-    public String getSolution() {
-        return solution;
-    }
-
-    public void setSolution(String solution) {
-        this.solution = solution;
-    }
-
     public String getP1Solution() {
         return p1Solution;
     }

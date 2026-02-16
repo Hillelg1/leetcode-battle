@@ -16,13 +16,15 @@ VALUES
 -- ======================
 -- LEETCODE QUESTIONS
 -- ======================
+
 CREATE TABLE IF NOT EXISTS leetcode_questions (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   difficulty VARCHAR(50),
   example TEXT NOT NULL,
-  starter_code TEXT
+  starter_code TEXT,
+  solution_video_url TEXT
 );
 
 INSERT INTO leetcode_questions (id, title, description, difficulty, example, starter_code)

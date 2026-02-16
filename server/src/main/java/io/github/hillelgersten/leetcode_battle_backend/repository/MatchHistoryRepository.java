@@ -38,13 +38,16 @@ public interface MatchHistoryRepository extends JpaRepository<MatchHistory, Long
     @Query(value = "Select * from match_history MH where MH.won = :username", nativeQuery = true)
     public List<Optional<MatchHistory>> getWinCountForUser(String username);
 
-    @Query(value = "Select * from match_history MH where MH.p1 = :username or MH.p2 = :username and MH.won != :username", nativeQuery = true)
+    @Query(value = """
+            Select * from match_history MH where MH.won != 'draw' and (MH.p1 = :username or MH.p2 = :username) and MH.won != :username""", nativeQuery = true)
     public List<Optional<MatchHistory>> getLossCountForUser(String username);
+
+    @Query(value = """ 
+            Select * from match_history MH where LOWER(MH.won) = 'draw' and (MH.p1 = :username or MH.p2 = :username)""", nativeQuery = true)
+    public List<Optional<MatchHistory>> getDrawCountForUser(String username);
 
     @Modifying
     @Query(value = "TRUNCATE TABLE match_history", nativeQuery = true)
     public void deleteAll();
-
-
 
 }

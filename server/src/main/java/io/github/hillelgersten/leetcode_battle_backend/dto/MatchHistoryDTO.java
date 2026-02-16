@@ -7,15 +7,23 @@ import java.util.Optional;
 public class MatchHistoryDTO {
     public List<Optional<MatchHistory>> wins;
     public List<Optional<MatchHistory>> loses;
+
+    public List<Optional<MatchHistory>> draws;
     public int winCount;
     public int lossCount;
+
+    public int drawCount;
     public int totalMatches;
-    public MatchHistoryDTO(List<Optional<MatchHistory>> wins, List<Optional<MatchHistory>> loses) {
+    public MatchHistoryDTO(List<Optional<MatchHistory>> wins, List<Optional<MatchHistory>> loses, List<Optional<MatchHistory>> draws) {
         this.wins = wins;
         this.loses = loses;
+        this.draws = draws;
+
         this.winCount = wins.size();
         this.lossCount = loses.size();
-        this.totalMatches = winCount + lossCount;
+        this.drawCount = draws.size();
+
+        this.totalMatches = winCount + lossCount + drawCount;
     }
     public List<Optional<MatchHistory>> getWins() {
         return wins;
@@ -46,5 +54,17 @@ public class MatchHistoryDTO {
     }
     public void setTotalMatches(int totalMatches) {
         this.totalMatches = totalMatches;
+    }
+    public List<Optional<MatchHistory>> getDraws() {
+        return draws;
+    }
+    public void setDraws(List<Optional<MatchHistory>> draws) {
+        this.draws = draws;
+    }
+    public int getDrawCount() {
+        return drawCount;
+    }
+    public void setDrawCount(int drawCount) {
+        this.drawCount = drawCount;
     }
 }

@@ -1,15 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import type { MatchHistoryDTO, MatchHistory } from "../../dto/MatchHistory.ts";
+import type { MatchHistoryDTO, MatchHistory, MatchHistorySingleDTO } from "../../dto/MatchHistory.ts";
+import {fetchMatchFullDetails} from "../../api.ts";
 import "./style.css";
 
-type Tab = "wins" | "loses";
-
+type Tab = "wins" | "loses" | "draws";
 const MatchHistoryPage: React.FC = () => {
     const username = JSON.parse(localStorage.getItem("user") || "{}").username;
 
     const [history, setHistory] = useState<MatchHistoryDTO | null>(null);
     const [tab, setTab] = useState<Tab>("wins");
     const [loading, setLoading] = useState(true);
+
+    // NEW: modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [detailsLoading, setDetailsLoading] = useState(false);
+    const [detailsError, setDetailsError] = useState<string | null>(null);
+    const [selectedMatch, setSelectedMatch] = useState<MatchHistory | null>(null);
+    const [fullDetails, setFullDetails] = useState<MatchHistorySingleDTO | null>(null);
 
     useEffect(() => {
         if (!username) {
@@ -33,19 +40,46 @@ const MatchHistoryPage: React.FC = () => {
         return raw.filter((m): m is MatchHistory => m != null);
     }, [history]);
 
-    const matchesToShow = tab === "wins" ? wins : loses;
+    const draws: MatchHistory[] = useMemo(() => {
+        const raw = history?.draws ?? [];
+        return raw.filter((m): m is MatchHistory => m != null);
+    }, [history]);
+
+    const matchesToShow =
+        tab === "wins" ? wins :
+            tab === "loses" ? loses :
+                draws;
+
+    async function openMatchModal(match: MatchHistory) {
+        setSelectedMatch(match);
+        setIsModalOpen(true);
+
+        setFullDetails(null);
+        setDetailsError(null);
+        setDetailsLoading(true);
+
+        try {
+            const dto = await fetchMatchFullDetails(match.matchId, match.questionTitle);
+            setFullDetails(dto);
+        } catch (e: any) {
+            setDetailsError(e?.message ?? "Failed to load match details");
+        } finally {
+            setDetailsLoading(false);
+        }
+    }
+
+    function closeModal() {
+        setIsModalOpen(false);
+        setSelectedMatch(null);
+        setFullDetails(null);
+        setDetailsError(null);
+    }
 
     if (loading) return <p>Loading match history...</p>;
 
-    // If the DTO didn't come back for some reason
-    if (!history) {
-        return <p>No match history found.</p>;
-    }
+    if (!history) return <p>No match history found.</p>;
 
-    // If totalMatches says none (or lists are empty)
-    if ((history.totalMatches ?? 0) === 0) {
-        return <p>No matches played yet.</p>;
-    }
+    if ((history.totalMatches ?? 0) === 0) return <p>No matches played yet.</p>;
 
     return (
         <div className="match-history-page">
@@ -57,6 +91,7 @@ const MatchHistoryPage: React.FC = () => {
                     <span data-label="TOTAL">{history.totalMatches}</span>
                     <span data-label="WINS">{history.winCount}</span>
                     <span data-label="LOSSES">{history.lossCount}</span>
+                    <span data-label="DRAWS">{history.drawCount}</span>
                 </div>
 
                 <div className="match-history-toggle">
@@ -72,12 +107,24 @@ const MatchHistoryPage: React.FC = () => {
                     >
                         Losses
                     </button>
+                    <button
+                        className={`toggle-btn ${tab === "draws" ? "active" : ""}`}
+                        onClick={() => setTab("draws")}
+                    >
+                        Draws
+                    </button>
                 </div>
             </div>
 
             {/* Empty state per-tab */}
             {matchesToShow.length === 0 ? (
-                <p>{tab === "wins" ? "No wins yet." : "No losses yet."}</p>
+                <p>
+                    {tab === "wins"
+                        ? "No wins yet."
+                        : tab === "loses"
+                            ? "No losses yet."
+                            : "No draws yet."}
+                </p>
             ) : (
                 <div className="match-list">
                     {matchesToShow.map((match) => {
@@ -87,7 +134,6 @@ const MatchHistoryPage: React.FC = () => {
                         const mySolved = isP1 ? match.p1TestcasesSolved : match.p2TestcasesSolved;
                         const myTime = isP1 ? match.p1FinishedAt : match.p2FinishedAt;
 
-                        // Keep your original truth logic (works even if backend categorization changes)
                         const result =
                             match.won === "Draw" ? "Draw" : match.won === username ? "Win" : "Loss";
 
@@ -95,10 +141,7 @@ const MatchHistoryPage: React.FC = () => {
                             <div
                                 key={match.matchId}
                                 className={`match-card ${result.toLowerCase()}`}
-                                onClick={() => {
-                                    console.log("Clicked match", match.matchId);
-                                    // later: navigate(`/match-history/${match.matchId}`)
-                                }}
+                                onClick={() => openMatchModal(match)} // NEW
                             >
                                 <div className="match-header">
                                     <span className="question">{match.questionTitle}</span>
@@ -129,6 +172,57 @@ const MatchHistoryPage: React.FC = () => {
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {/* NEW: Modal */}
+            {isModalOpen && (
+                <div className="mh-modal-backdrop" onClick={closeModal}>
+                    <div className="mh-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="mh-modal-header">
+                            <div className="mh-modal-title">
+                                {selectedMatch?.questionTitle ?? "Match details"}
+                            </div>
+                            <button className="mh-modal-close" onClick={closeModal}>
+                                ✕
+                            </button>
+                        </div>
+
+                        {detailsLoading && <p>Loading details...</p>}
+                        {detailsError && <p className="mh-error">{detailsError}</p>}
+
+                        {fullDetails && (
+                            <div className="mh-modal-content">
+                                <div className="mh-row">
+                                    <b>Winner:</b> {fullDetails.winner}
+                                </div>
+                                <div className="mh-row">
+                                    <b>Match ID:</b> {fullDetails.matchId}
+                                </div>
+
+                                {/* Code panes */}
+                                <div className="mh-code-grid">
+                                    <div className="mh-code-pane">
+                                        <div className="mh-code-title">P1 Code</div>
+                                        <pre className="mh-code">{fullDetails.p1Code}</pre>
+                                    </div>
+                                    <div className="mh-code-pane">
+                                        <div className="mh-code-title">P2 Code</div>
+                                        <pre className="mh-code">{fullDetails.p2Code}</pre>
+                                    </div>
+                                </div>
+
+                                {/* Solution link */}
+                                {fullDetails.solution ? (
+                                    <a className="mh-solution-link" href={fullDetails.solution} target="_blank" rel="noreferrer">
+                                        Watch solution
+                                    </a>
+                                ) : (
+                                    <p style={{ opacity: 0.7 }}>No solution link available for this problem yet.</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

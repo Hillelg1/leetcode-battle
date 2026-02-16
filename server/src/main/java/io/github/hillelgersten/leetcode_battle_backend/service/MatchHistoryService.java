@@ -2,9 +2,11 @@ package io.github.hillelgersten.leetcode_battle_backend.service;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchHistoryDTO;
 import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
+import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuestionRepository;
 import io.github.hillelgersten.leetcode_battle_backend.model.MatchHistory;
 import io.github.hillelgersten.leetcode_battle_backend.repository.MatchHistoryRepository;
 import org.springframework.stereotype.Service;
+import io.github.hillelgersten.leetcode_battle_backend.dto.MatchHistorySingleDTO;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,8 +17,11 @@ import java.util.UUID;
 public class MatchHistoryService {
     private final MatchHistoryRepository matchHistoryRepository;
 
-    public MatchHistoryService(MatchHistoryRepository matchHistoryRepository) {
+    private final LeetcodeQuestionRepository questionRepo;
+
+    public MatchHistoryService(MatchHistoryRepository matchHistoryRepository, LeetcodeQuestionRepository questionRepo) {
         this.matchHistoryRepository = matchHistoryRepository;
+        this.questionRepo = questionRepo;
     }
 
     public void saveMatchHistory(MatchHistory matchHistory) {
@@ -56,7 +61,6 @@ public class MatchHistoryService {
         else if (match.getP1endTime() < match.getP2endTime()) matchHistory.setWon(match.getP1());
         else if (match.getP2endTime() < match.getP1endTime()) matchHistory.setWon(match.getP2());
         else matchHistory.setWon("Draw");
-        matchHistory.setSolution("");
         matchHistory.setQuestionTitle(match.getQuestion().getTitle());
         saveMatchHistory(matchHistory);
     }
@@ -65,7 +69,7 @@ public class MatchHistoryService {
         matchHistoryRepository.deleteAll();
     }
 
-    public List<Optional<MatchHistory>> getAllwins(String userName){
+    public List<Optional<MatchHistory>> getAllWins(String userName){
         return matchHistoryRepository.getWinCountForUser(userName);
     }
 
@@ -73,9 +77,24 @@ public class MatchHistoryService {
         return matchHistoryRepository.getLossCountForUser(userName);
     }
 
+    public List<Optional<MatchHistory>> getAllDraws(String userName){
+        return matchHistoryRepository.getDrawCountForUser(userName);
+    }
     public MatchHistoryDTO createMatchHistoryDTO(String username) {
-        return new MatchHistoryDTO(getAllwins(username), getAllLoses(username));
+        return new MatchHistoryDTO(getAllWins(username), getAllLoses(username), getAllDraws(username));
     }
 
+    public MatchHistory findByMatchId(String matchId){
+        return matchHistoryRepository.findByMatchId(matchId).orElse(null);
+    }
+
+    public MatchHistorySingleDTO getMatchHistorySingleDTO(String matchId, String title){
+        MatchHistory match = findByMatchId(matchId);
+        Optional<LeetcodeQuestions> optQuestion = questionRepo.findByTitle(title);
+        LeetcodeQuestions question = optQuestion.orElse(null);
+        if(question == null) return null;
+        String solutionVideoUrl = question.getSolutionVideoUrl();
+        return new MatchHistorySingleDTO(matchId, match.getP1Solution(), match.getP2Solution(), match.getWon(), solutionVideoUrl);
+    }
 
 }

@@ -18,7 +18,19 @@ export interface MatchHistory {
 export type MatchHistoryDTO = {
     wins: Array<MatchHistory | null>;
     loses: Array<MatchHistory | null>;
+    draws: Array<MatchHistory | null>;
+
     winCount: number;
     lossCount: number;
+    drawCount: number;
+
     totalMatches: number;
+};
+
+export type MatchHistorySingleDTO = {
+    p1Code: string;
+    p2Code: string;
+    winner: string;
+    matchId: string;
+    solution: string; // this can be a youtube URL
 };
