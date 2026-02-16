@@ -1,12 +1,18 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./style.css";
 import { GiBattleGear } from "react-icons/gi";
 
 export default function Layout() {
+  const navigate = useNavigate();
   const [admin, setAdmin] = useState(false);
   const location = useLocation();
   const isBattle = location.pathname.startsWith("/battle");
+
+  const handleLogout = () => {
+      localStorage.clear();
+      navigate("/");
+  }
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -45,7 +51,7 @@ export default function Layout() {
               <li className="nav-item">
                 <button
                   className="btn btn-outline-light ms-2"
-                  onClick={() => localStorage.clear()}
+                  onClick={() => handleLogout()}
                 >
                   Logout
                 </button>

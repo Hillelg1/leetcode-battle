@@ -100,7 +100,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 0;
+    padding-top: 5px;
 }
 
 /* Keep stats aligned and prevent wrapping */
