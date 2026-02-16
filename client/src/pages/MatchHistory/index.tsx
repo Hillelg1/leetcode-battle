@@ -196,10 +196,6 @@ const MatchHistoryPage: React.FC = () => {
                                 <div className="mh-row">
                                     <b>Winner:</b> {fullDetails.winner}
                                 </div>
-                                <div className="mh-row">
-                                    <b>Match ID:</b> {fullDetails.matchId}
-                                </div>
-
                                 {/* Code panes */}
                                 <div className="mh-code-grid">
                                     <div className="mh-code-pane">
