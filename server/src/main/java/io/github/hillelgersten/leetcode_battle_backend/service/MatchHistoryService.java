@@ -58,6 +58,8 @@ public class MatchHistoryService {
         matchHistory.setP2Solution(match.getP2Code());
         if(match.getP1AmountFinished() < match.getP2AmountFinished())matchHistory.setWon(match.getP2());
         else if(match.getP2AmountFinished() < match.getP1AmountFinished())matchHistory.setWon(match.getP1());
+        else if(match.getP1SubmissionCount() < match.getP2SubmissionCount())matchHistory.setWon(match.getP1());
+        else if(match.getP2SubmissionCount() < match.getP1SubmissionCount())matchHistory.setWon(match.getP2());
         else if (match.getP1endTime() < match.getP2endTime()) matchHistory.setWon(match.getP1());
         else if (match.getP2endTime() < match.getP1endTime()) matchHistory.setWon(match.getP2());
         else matchHistory.setWon("Draw");
