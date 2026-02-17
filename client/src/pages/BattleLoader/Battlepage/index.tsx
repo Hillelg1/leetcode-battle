@@ -30,6 +30,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const p1= match.p1;
     const p2 = match.p2;
     const startedAt = Number(match.startTime)
+    const isP1 = user === p1;
 
     const [code, setCode] = useState<string>(question.starterCode);
     const [testCases, setTestCases] = useState<testCase[]>([]);
@@ -38,6 +39,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const [passedAll, setPassedAll] = useState(false);
     const [battleState, setBattleState] = useState("BATTLE");
     const [won, setWon] = useState(false);
+    const [submissionCount, setSubmissionCount] = useState(isP1 ? match.p1SubmissionCount : match.p2SubmissionCount);
 
     const isLocked = timeUp || passedAll;
 
@@ -46,6 +48,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const handleSubmit = async () => {
         try {
             const res = await runCode(questionId, code);
+            setSubmissionCount((c) => c + 1);
             setPassedAll(res.passedAll);
             setTestCases(res.results);
             setSubmitted(true);
@@ -139,13 +142,23 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
         <div className="battlepage">
             <div className="header">
                 <h2>Battle Mode</h2>
+
+                {/* NEW: submission count */}
+                <span className="stat-pill">Submissions: {submissionCount}</span>
+
                 <button onClick={onQuit}>Quit</button>
+
                 <button onClick={handleSubmit} disabled={timeUp}>
                     Submit
                 </button>
 
                 {questionId && (
-                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} won = {won} />
+                    <Timer
+                        initialSeconds={600}
+                        onComplete={timeOut}
+                        startTime={startedAt}
+                        won={won}
+                    />
                 )}
             </div>
 

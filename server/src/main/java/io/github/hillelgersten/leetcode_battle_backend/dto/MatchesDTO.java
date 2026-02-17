@@ -9,6 +9,9 @@ public class MatchesDTO {
     private String p1;
     private String p2;
 
+    private int p1SubmissionCount = 0;
+    private int p2SubmissionCount = 0;
+
     private String p1Code = "";
     private String p2Code = "";
 
@@ -120,6 +123,19 @@ public class MatchesDTO {
     }
     public boolean bothDone() {
         return p1Done.get() && p2Done.get();
+    }
+
+    public int getP1SubmissionCount() {
+        return p1SubmissionCount;
+    }
+    public void setP1SubmissionCount(int p1SubmissionCount) {
+        this.p1SubmissionCount = p1SubmissionCount;
+    }
+    public int getP2SubmissionCount() {
+        return p2SubmissionCount;
+    }
+    public void setP2SubmissionCount(int p2SubmissionCount) {
+        this.p2SubmissionCount = p2SubmissionCount;
     }
 
 }

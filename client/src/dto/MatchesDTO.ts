@@ -4,6 +4,8 @@ export interface MatchesDTO {
   matchId: string;
   p1: string;
   p2: string;
+  p1SubmissionCount: number;
+  p2SubmissionCount: number;
   question: {};
   type?: string;   // e.g., JOIN, FINISH
   payload?: string;     // optional, e.g., win ner info or other data

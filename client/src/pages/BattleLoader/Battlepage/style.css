@@ -16,6 +16,16 @@
   align-items: center;
 }
 
+.stat-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: #1f1f1f;
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+}
+
 .main-content,
 .editor,
 .description,

@@ -149,4 +149,11 @@ public class BattleMatchService {
         else if (code.getUserName().equals(match.getP2()))
             match.setP2Code(code.getCode());
     }
+
+    public void addSubmissionCount(String userName){
+        MatchesDTO match = userToMatches.get(userName);
+        if (match == null)return;
+        if (userName.equals(match.getP1()))match.setP1SubmissionCount(match.getP1SubmissionCount()+1);
+        else match.setP2SubmissionCount(match.getP2SubmissionCount()+1);
+    }
 }
