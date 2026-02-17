@@ -56,6 +56,8 @@ public class MatchHistoryService {
         matchHistory.setP2FinishedAt(formatTime(match.getP2endTime(), match.getStartTime(), 600L));
         matchHistory.setP1Solution(match.getP1Code());
         matchHistory.setP2Solution(match.getP2Code());
+        matchHistory.setP1SubmissionCount(match.getP1SubmissionCount());
+        matchHistory.setP2SubmissionCount(match.getP2SubmissionCount());
         if(match.getP1AmountFinished() < match.getP2AmountFinished())matchHistory.setWon(match.getP2());
         else if(match.getP2AmountFinished() < match.getP1AmountFinished())matchHistory.setWon(match.getP1());
         else if(match.getP1SubmissionCount() < match.getP2SubmissionCount())matchHistory.setWon(match.getP1());

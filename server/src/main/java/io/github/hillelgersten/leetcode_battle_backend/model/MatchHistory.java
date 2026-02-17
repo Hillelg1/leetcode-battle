@@ -25,7 +25,7 @@ public class MatchHistory {
     private String questionTitle;
 
     /**
-     * Winner username (p1 or p2)
+     * Winner username (p1 or p2) or "Draw"
      */
     private String won;
 
@@ -51,6 +51,13 @@ public class MatchHistory {
     private String p1FinishedAt; // e.g. "06:10"
     private String p2FinishedAt; // e.g. "07:45"
 
+    // NEW: submission counts
+    @Column(nullable = false)
+    private int p1SubmissionCount = 0;
+
+    @Column(nullable = false)
+    private int p2SubmissionCount = 0;
+
     /* ---------- Constructors ---------- */
 
     public MatchHistory() {}
@@ -60,98 +67,54 @@ public class MatchHistory {
         this.p1 = p1;
         this.p2 = p2;
         this.questionTitle = questionTitle;
+        this.p1SubmissionCount = 0;
+        this.p2SubmissionCount = 0;
     }
 
     /* ---------- Getters & Setters ---------- */
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getMatchId() {
-        return matchId;
-    }
+    public String getMatchId() { return matchId; }
+    public void setMatchId(String matchId) { this.matchId = matchId; }
 
-    public void setMatchId(String matchId) {
-        this.matchId = matchId;
-    }
+    public String getP1() { return p1; }
+    public void setP1(String p1) { this.p1 = p1; }
 
-    public String getP1() {
-        return p1;
-    }
+    public String getP2() { return p2; }
+    public void setP2(String p2) { this.p2 = p2; }
 
-    public void setP1(String p1) {
-        this.p1 = p1;
-    }
+    public String getQuestionTitle() { return questionTitle; }
+    public void setQuestionTitle(String questionTitle) { this.questionTitle = questionTitle; }
 
-    public String getP2() {
-        return p2;
-    }
+    public String getWon() { return won; }
+    public void setWon(String won) { this.won = won; }
 
-    public void setP2(String p2) {
-        this.p2 = p2;
-    }
+    public String getSolution() { return solution; }
+    public void setSolution(String solution) { this.solution = solution; }
 
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
+    public String getP1Solution() { return p1Solution; }
+    public void setP1Solution(String p1Solution) { this.p1Solution = p1Solution; }
 
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
-    }
+    public String getP2Solution() { return p2Solution; }
+    public void setP2Solution(String p2Solution) { this.p2Solution = p2Solution; }
 
-    public String getWon() {
-        return won;
-    }
+    public String getP1TestcasesSolved() { return p1TestcasesSolved; }
+    public void setP1TestcasesSolved(String p1TestcasesSolved) { this.p1TestcasesSolved = p1TestcasesSolved; }
 
-    public void setWon(String won) {
-        this.won = won;
-    }
-    public String getP1Solution() {
-        return p1Solution;
-    }
+    public String getP2TestcasesSolved() { return p2TestcasesSolved; }
+    public void setP2TestcasesSolved(String p2TestcasesSolved) { this.p2TestcasesSolved = p2TestcasesSolved; }
 
-    public void setP1Solution(String p1Solution) {
-        this.p1Solution = p1Solution;
-    }
+    public String getP1FinishedAt() { return p1FinishedAt; }
+    public void setP1FinishedAt(String p1FinishedAt) { this.p1FinishedAt = p1FinishedAt; }
 
-    public String getP2Solution() {
-        return p2Solution;
-    }
+    public String getP2FinishedAt() { return p2FinishedAt; }
+    public void setP2FinishedAt(String p2FinishedAt) { this.p2FinishedAt = p2FinishedAt; }
 
-    public void setP2Solution(String p2Solution) {
-        this.p2Solution = p2Solution;
-    }
+    // NEW getters/setters
+    public int getP1SubmissionCount() { return p1SubmissionCount; }
+    public void setP1SubmissionCount(int p1SubmissionCount) { this.p1SubmissionCount = p1SubmissionCount; }
 
-    public String getP1TestcasesSolved() {
-        return p1TestcasesSolved;
-    }
-
-    public void setP1TestcasesSolved(String p1TestcasesSolved) {
-        this.p1TestcasesSolved = p1TestcasesSolved;
-    }
-
-    public String getP2TestcasesSolved() {
-        return p2TestcasesSolved;
-    }
-
-    public void setP2TestcasesSolved(String p2TestcasesSolved) {
-        this.p2TestcasesSolved = p2TestcasesSolved;
-    }
-
-    public String getP1FinishedAt() {
-        return p1FinishedAt;
-    }
-
-    public void setP1FinishedAt(String p1FinishedAt) {
-        this.p1FinishedAt = p1FinishedAt;
-    }
-
-    public String getP2FinishedAt() {
-        return p2FinishedAt;
-    }
-
-    public void setP2FinishedAt(String p2FinishedAt) {
-        this.p2FinishedAt = p2FinishedAt;
-    }
+    public int getP2SubmissionCount() { return p2SubmissionCount; }
+    public void setP2SubmissionCount(int p2SubmissionCount) { this.p2SubmissionCount = p2SubmissionCount; }
 }
