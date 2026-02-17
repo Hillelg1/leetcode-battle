@@ -7,7 +7,10 @@ public class MatchHistorySingleDTO {
     public String matchId;
     public String solution;
 
-    public MatchHistorySingleDTO(String matchId, String p1Code, String p2Code, String winner, String solution){
+    public int p1SubmissionCount;
+    public int p2SubmissionCount;
+
+    public MatchHistorySingleDTO(String matchId, String p1Code, String p2Code, String winner, String solution, int p1SubmissionCount, int p2SubmissionCount){
         this.matchId = matchId;
         this.p1Code = p1Code;
         this.p2Code = p2Code;
@@ -45,4 +48,14 @@ public class MatchHistorySingleDTO {
     public void setSolution(String solution) {
         this.solution = solution;
     }
+    public int getP1SubmissionCount() {
+        return p1SubmissionCount;
+    }
+    public void setP1SubmissionCount(int p1SubmissionCount) {
+        this.p1SubmissionCount = p1SubmissionCount;
+    }
+    public int getP2SubmissionCount() {
+        return p2SubmissionCount;
+    }
+    public void setP2SubmissionCount(int p2SubmissionCount) {}
 }

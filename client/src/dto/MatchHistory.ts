@@ -13,6 +13,8 @@ export interface MatchHistory {
     p2TestcasesSolved: string;
     p1FinishedAt: string;
     p2FinishedAt: string;
+    p1SubmissionCount: number;
+    p2SubmissionCount: number;
 }
 
 export type MatchHistoryDTO = {
@@ -33,4 +35,6 @@ export type MatchHistorySingleDTO = {
     winner: string;
     matchId: string;
     solution: string; // this can be a youtube URL
+    p1SubmissionCount: number;
+    p2SubmissionCount: number;
 };

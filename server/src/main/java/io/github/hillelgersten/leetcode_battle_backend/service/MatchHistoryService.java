@@ -98,7 +98,7 @@ public class MatchHistoryService {
         LeetcodeQuestions question = optQuestion.orElse(null);
         if(question == null) return null;
         String solutionVideoUrl = question.getSolutionVideoUrl();
-        return new MatchHistorySingleDTO(matchId, match.getP1Solution(), match.getP2Solution(), match.getWon(), solutionVideoUrl);
+        return new MatchHistorySingleDTO(matchId, match.getP1Solution(), match.getP2Solution(), match.getWon(), solutionVideoUrl, match.getP1SubmissionCount(), match.getP2SubmissionCount());
     }
 
 }

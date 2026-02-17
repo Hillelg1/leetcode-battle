@@ -134,6 +134,9 @@ const MatchHistoryPage: React.FC = () => {
                         const mySolved = isP1 ? match.p1TestcasesSolved : match.p2TestcasesSolved;
                         const myTime = isP1 ? match.p1FinishedAt : match.p2FinishedAt;
 
+                        const mySubmissions = isP1 ? match.p1SubmissionCount : match.p2SubmissionCount;
+                        const oppSubmissions = isP1 ? match.p2SubmissionCount : match.p1SubmissionCount;
+
                         const result =
                             match.won === "Draw" ? "Draw" : match.won === username ? "Win" : "Loss";
 
@@ -154,6 +157,7 @@ const MatchHistoryPage: React.FC = () => {
                                         <span className="player-stats">
                       <span>Testcases: {mySolved}</span>
                       <span>Time: {myTime}</span>
+                                            <span>Submissions: {mySubmissions}</span>
                     </span>
                                     </div>
 
@@ -166,6 +170,7 @@ const MatchHistoryPage: React.FC = () => {
                       <span>
                         Time: {isP1 ? match.p2FinishedAt : match.p1FinishedAt}
                       </span>
+                                            <span>Submissions: {oppSubmissions}</span>
                     </span>
                                     </div>
                                 </div>

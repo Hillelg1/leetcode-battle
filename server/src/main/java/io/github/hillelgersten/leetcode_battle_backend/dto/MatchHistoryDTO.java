@@ -14,6 +14,7 @@ public class MatchHistoryDTO {
 
     public int drawCount;
     public int totalMatches;
+
     public MatchHistoryDTO(List<Optional<MatchHistory>> wins, List<Optional<MatchHistory>> loses, List<Optional<MatchHistory>> draws) {
         this.wins = wins;
         this.loses = loses;
