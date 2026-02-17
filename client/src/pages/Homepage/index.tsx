@@ -66,10 +66,7 @@ export default function HomePage() {
                             Solve the problem and submit your solution.
                         </div>
                         <div className="how-line">
-                            Whoever solves the most testcases wins; if tied, whoever submitted less times wins.
-                        </div>
-                        <div className = "how-line">
-                            If tied on submit count, whoever had fastest time wins.
+                            After the game ends, check your stats to see who won.
                         </div>
                     </div>
                 </div>
@@ -108,7 +105,9 @@ export default function HomePage() {
                         <ul>
                             <li><b>Win condition:</b> whoever solves the most testcases wins.</li>
                             <li><b>Tiebreaker:</b> if both solve the same number of testcases, whoever solved it first wins.</li>
-                            <li><b>Draw:</b> if both solve the same number of testcases and finish at the same time (or neither finishes), it’s a draw.</li>
+                            <li><b>Draw:</b> if both solve the same number of testcases then it goes by least submits</li>
+                            <li><b>Draw:</b> if both have the same amount of submits it goes by time</li>
+                            <li><b>Draw:</b> if both solve at the same time then draw</li>
                         </ul>
                     </details>
                 </div>
