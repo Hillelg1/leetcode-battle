@@ -66,7 +66,10 @@ export default function HomePage() {
                             Solve the problem and submit your solution.
                         </div>
                         <div className="how-line">
-                            Whoever solves the most testcases wins; if tied, whoever solved first wins.
+                            Whoever solves the most testcases wins; if tied, whoever submitted less times wins.
+                        </div>
+                        <div className = "how-line">
+                            If tied on submit count, whoever had fastest time wins.
                         </div>
                     </div>
                 </div>
