@@ -81,3 +81,74 @@
   transition: background 0.2s ease;
   background: #666;
 }
+
+.quit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 1rem;
+}
+
+.quit-modal {
+  width: min(560px, 100%);
+  background: #1b1b1b;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #fff;
+}
+
+.quit-modal h3 {
+  margin: 0 0 1rem;
+}
+
+.quit-stats-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.quit-stat {
+  background: #262626;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.quit-stat span {
+  color: #bdbdbd;
+  font-size: 0.85rem;
+}
+
+.quit-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.quit-actions button {
+  padding: 0.45rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background: #2b2b2b;
+  color: white;
+}
+
+.quit-actions .danger {
+  background: #7a1f1f;
+  border-color: #a72b2b;
+}
+
+@media (max-width: 720px) {
+  .quit-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

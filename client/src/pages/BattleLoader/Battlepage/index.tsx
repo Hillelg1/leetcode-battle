@@ -8,6 +8,7 @@ import type { testCase } from "./testCases";
 import subscribe from "./hooks/subscribeToMatch";
 import { SplitPane } from "@rexxars/react-split-pane";
 import type { MatchesDTO } from "../../../dto/MatchesDTO.ts";
+import { useNavigate } from "react-router-dom";
 
 interface BattlePageProps {
     match: MatchesDTO;
@@ -21,6 +22,7 @@ interface BattlePageProps {
 const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match, disconnect}) => {
     if (!match.question) return <div>Question not found...</div>;
 
+    const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user") || "{}").username;
     const question: any = match.question;
     const description = question.description;
@@ -40,8 +42,14 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const [battleState, setBattleState] = useState("BATTLE");
     const [won, setWon] = useState(false);
     const [submissionCount, setSubmissionCount] = useState(isP1 ? match.p1SubmissionCount : match.p2SubmissionCount);
+    const [showQuitSummary, setShowQuitSummary] = useState(false);
 
     const isLocked = timeUp || passedAll;
+    const opponent = isP1 ? p2 : p1;
+    const opponentSubmissionCount = isP1 ? match.p2SubmissionCount : match.p1SubmissionCount;
+    const localPassedCount = testCases.filter((tc) => tc.passed).length;
+    const elapsedSeconds = Math.max(0, Math.floor(Date.now() / 1000) - startedAt);
+    const elapsedDisplay = `${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`;
 
     const saveTimeoutRef = useRef<number | null>(null);
 
@@ -138,6 +146,20 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
         determineStarterCode();
     }, []);
 
+    const openQuitSummary = () => {
+        setShowQuitSummary(true);
+    };
+
+    const closeQuitSummary = () => {
+        setShowQuitSummary(false);
+    };
+
+    const exitToHome = () => {
+        onQuit?.();
+        disconnect();
+        navigate("/");
+    };
+
     return (
         <div className="battlepage">
             <div className="header">
@@ -146,7 +168,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
                 {/* NEW: submission count */}
                 <span className="stat-pill">Submissions: {submissionCount}</span>
 
-                <button onClick={onQuit}>Quit</button>
+                <button onClick={openQuitSummary}>Quit</button>
 
                 <button onClick={handleSubmit} disabled={timeUp}>
                     Submit
@@ -190,6 +212,36 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
                     )}
                 </div>
             </SplitPane>
+
+            {showQuitSummary && (
+                <div className="quit-overlay">
+                    <div className="quit-modal">
+                        <h3>Match Stats</h3>
+                        <div className="quit-stats-grid">
+                            <div className="quit-stat">
+                                <span>Your submissions</span>
+                                <strong>{submissionCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>{opponent}'s submissions</span>
+                                <strong>{opponentSubmissionCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>Your latest pass count</span>
+                                <strong>{localPassedCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>Elapsed time</span>
+                                <strong>{elapsedDisplay}</strong>
+                            </div>
+                        </div>
+                        <div className="quit-actions">
+                            <button onClick={closeQuitSummary}>Keep Playing</button>
+                            <button onClick={exitToHome} className="danger">Exit to Home</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
