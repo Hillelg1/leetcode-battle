@@ -4,18 +4,18 @@ import './style.css'
 export type testCase = {
     'case': number;
     'input': {
-        'nums': any[],
-        'target': number
     };
     'expected': [];
     'output': [];
     'passed': boolean;
+     'amountPassed': boolean;
 }
 
 export default function Results({results}: {results: testCase[]}){
     if(!results || results.length==0)return (
         <div>no test cases available atm</div>
     )
+
   const half = Math.ceil(results.length / 2);
   const firstHalf = results.slice(0, half);
   const secondHalf = results.slice(half);

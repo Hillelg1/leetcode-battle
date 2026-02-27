@@ -23,20 +23,16 @@ const BattleLoader: React.FC = () => {
   }, []);
 
   const onFinish = () => {
-    if (match) finish(match.matchId); // prop drill onfinish to battlepage
-    disconnect();
+    if (match)  finish(match.matchId); // prop drill onfinish to battlepage
   };
 
   const onQuit = () =>{
     if(match) quit(match.matchId);
-    disconnect();
-    setBattleState("LOADING");
     navigate("/")
   }
 
   const onTimeOut = () => {
       if (match) timeOut(match.matchId);
-      disconnect();
   }
 
   if (battleState === "LOADING" || !match) {
@@ -52,6 +48,7 @@ const BattleLoader: React.FC = () => {
         onQuit={onQuit}
         onTimeOut = {onTimeOut}
         client={client}
+        disconnect = {disconnect}
       />
     </div>
     );

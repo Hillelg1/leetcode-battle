@@ -6,37 +6,70 @@ import org.springframework.stereotype.Service;
 
 import io.github.hillelgersten.leetcode_battle_backend.repository.LeetcodeQuestionRepository;
 import io.github.hillelgersten.leetcode_battle_backend.model.LeetcodeQuestions;
-import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
 
+import io.github.hillelgersten.leetcode_battle_backend.dto.MatchesDTO;
 import io.github.hillelgersten.leetcode_battle_backend.dto.StoreCodeDTO;
-import java.util.LinkedList;
-import java.util.HashMap;
+
 import java.util.Queue;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class BattleMatchService {
 
-    @Autowired
-    private LeetcodeQuestionRepository repo;
 
-    private final Queue<String> waitingRoom = new LinkedList<>();
-    HashMap<String, MatchesDTO> matches = new HashMap<>();
-    HashMap<String,MatchesDTO> userToMatches = new HashMap<>();
-    public synchronized MatchesDTO addToUserRoom(String user){
-            if(userToMatches.containsKey(user))return null;
-            userToMatches.put(user,null);
+    private final LeetcodeQuestionRepository repo;
+    private final MatchHistoryService matchHistoryService;
+
+    public BattleMatchService(LeetcodeQuestionRepository repo, MatchHistoryService matchHistoryService) {
+        this.repo = repo;
+        this.matchHistoryService = matchHistoryService;
+    }
+
+
+
+    private final Queue<String> waitingRoom = new ConcurrentLinkedQueue<>();
+    ConcurrentHashMap<String, MatchesDTO> matches = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String,MatchesDTO> userToMatches = new ConcurrentHashMap<>();
+
+    private final Set<String> waitingUsers = ConcurrentHashMap.newKeySet();
+    private static final MatchesDTO WAITING = new MatchesDTO();
+    public MatchesDTO addToUserRoom(String user){
+            if(userToMatches.putIfAbsent(user,WAITING)!=null)return null;
+            if (!waitingUsers.add(user)) return null;
+
             this.waitingRoom.add(user);
             System.out.println(waitingRoom);
-            if(this.waitingRoom.size() >= 2 && this.userToMatches.size() >= 2){
-                String p1 = this.waitingRoom.poll();
-                String p2 = this.waitingRoom.poll();
+                String p1 = waitingRoom.poll();
+                String p2 = waitingRoom.poll();
+
+                if (p1 == null || p2 == null) {
+                    if (p1 != null) {
+                        waitingRoom.add(p1);
+                        waitingUsers.add(p1);
+                    }
+                    if (p2 != null) {
+                        waitingRoom.add(p2);
+                        waitingUsers.add(p2);
+                    }
+                    return null;
+                }
+
+                waitingUsers.remove(p1);
+                waitingUsers.remove(p2);
 
                 try {
-                    Optional<LeetcodeQuestions> optionalQuestion = repo.findById(1L);
+
+                    Optional<LeetcodeQuestions> optionalQuestion = repo.getRandomQuestion();
                     if(optionalQuestion.isPresent()){
                         MatchesDTO match = new MatchesDTO();
                         LeetcodeQuestions question = optionalQuestion.get();
@@ -44,7 +77,8 @@ public class BattleMatchService {
                                 question.getId(),
                                 question.getDescription(),
                                 question.getExample(),
-                                question.getStarterCode()
+                                question.getStarterCode(),
+                                question.getTitle()
                         );
                         match.setP1(p1);
                         match.setP2(p2);
@@ -61,23 +95,50 @@ public class BattleMatchService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }
         return null;
     }
 
-    public void finishMatch(String matchId, String sender){
+    public void finishMatch(String matchId, String sender) {
         MatchesDTO match = userToMatches.get(sender);
+        if (match == null || match == WAITING) return;
+
+        // Mark sender as done
         match.setDone(sender);
-        if(match.getP1().equals(sender))userToMatches.remove(match.getP1());
-        else userToMatches.remove(match.getP2());
-        if (!match.bothDone())return;
-        matches.remove(matchId);
-        userToMatches.remove(match.getP1());
-        userToMatches.remove(match.getP2());
+
+        // Free THIS user immediately
+        userToMatches.remove(sender);
+        if (match.bothDone()) {
+            matches.remove(matchId);
+            matchHistoryService.createNewMatchHistory(match);
+        }
+    }
+
+    public void setTestCasesCompleted(String sender, int amount, long endTime){
+        MatchesDTO match = userToMatches.get(sender);
+        if (match == null || match == WAITING) return;
+        if (match.getP1().equals(sender)) {
+            if (match.getP1AmountFinished() >= amount) return;
+            match.setP1AmountFinished(amount);
+            setEndTime(sender,endTime);
+        }
+        else{
+           if (match.getP2AmountFinished() >= amount) return;
+           match.setP2AmountFinished(amount);
+            setEndTime(sender,endTime);
+        }
+    }
+
+    public void setEndTime(String sender, long endTime){
+        System.out.println(sender);
+        MatchesDTO match = userToMatches.get(sender);
+        if (match == null || match == WAITING) return;
+        System.out.println(endTime);
+        if (match.getP1().equals(sender)) match.setP1endTime(endTime);
+        else match.setP2endTime(endTime);
     }
 
     public MatchesDTO checkForRejoin(String userName){
-        return userToMatches.get(userName);
+        return userToMatches.get(userName) == WAITING ? null : userToMatches.get(userName);
     }
 
     public void storeCode(StoreCodeDTO code){
@@ -87,5 +148,12 @@ public class BattleMatchService {
             match.setP1Code(code.getCode());
         else if (code.getUserName().equals(match.getP2()))
             match.setP2Code(code.getCode());
+    }
+
+    public void addSubmissionCount(String userName){
+        MatchesDTO match = userToMatches.get(userName);
+        if (match == null)return;
+        if (userName.equals(match.getP1()))match.setP1SubmissionCount(match.getP1SubmissionCount()+1);
+        else match.setP2SubmissionCount(match.getP2SubmissionCount()+1);
     }
 }

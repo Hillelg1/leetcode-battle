@@ -8,6 +8,7 @@ import type { testCase } from "./testCases";
 import subscribe from "./hooks/subscribeToMatch";
 import { SplitPane } from "@rexxars/react-split-pane";
 import type { MatchesDTO } from "../../../dto/MatchesDTO.ts";
+import { useNavigate } from "react-router-dom";
 
 interface BattlePageProps {
     match: MatchesDTO;
@@ -15,11 +16,13 @@ interface BattlePageProps {
     onQuit?: () => void;
     client: any;
     onTimeOut?: () => void;
+    disconnect: () => void;
 }
 
-const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match }) => {
+const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTimeOut, match, disconnect}) => {
     if (!match.question) return <div>Question not found...</div>;
 
+    const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user") || "{}").username;
     const question: any = match.question;
     const description = question.description;
@@ -29,6 +32,7 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const p1= match.p1;
     const p2 = match.p2;
     const startedAt = Number(match.startTime)
+    const isP1 = user === p1;
 
     const [code, setCode] = useState<string>(question.starterCode);
     const [testCases, setTestCases] = useState<testCase[]>([]);
@@ -36,14 +40,23 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
     const [timeUp, setTimeUp] = useState(false);
     const [passedAll, setPassedAll] = useState(false);
     const [battleState, setBattleState] = useState("BATTLE");
+    const [won, setWon] = useState(false);
+    const [submissionCount, setSubmissionCount] = useState(isP1 ? match.p1SubmissionCount : match.p2SubmissionCount);
+    const [showQuitSummary, setShowQuitSummary] = useState(false);
 
     const isLocked = timeUp || passedAll;
+    const opponent = isP1 ? p2 : p1;
+    const opponentSubmissionCount = isP1 ? match.p2SubmissionCount : match.p1SubmissionCount;
+    const localPassedCount = testCases.filter((tc) => tc.passed).length;
+    const elapsedSeconds = Math.max(0, Math.floor(Date.now() / 1000) - startedAt);
+    const elapsedDisplay = `${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`;
 
     const saveTimeoutRef = useRef<number | null>(null);
 
     const handleSubmit = async () => {
         try {
             const res = await runCode(questionId, code);
+            setSubmissionCount((c) => c + 1);
             setPassedAll(res.passedAll);
             setTestCases(res.results);
             setSubmitted(true);
@@ -94,16 +107,17 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
 
     useEffect(() => {
         if (!client || !matchId) return;
-        const subscription = subscribe(user, client, matchId, setBattleState);
+        const subscription = subscribe(user, client, matchId, setBattleState, disconnect);
         return () => subscription.unsubscribe();
     }, [client, matchId, user]);
 
     useEffect(() => {
         if (battleState === "LOST") alert("opponent solved all test cases");
+        if (battleState == "OPTIMEOUT") alert("Opponent timed out!");
         if (battleState === "WON") alert("Solved all testcases!");
         if (battleState === "QUIT") alert("opponent quit!");
         if (battleState === "TIMEOUT") alert("Time is up!");
-        if (battleState == "OPTIMEOUT") alert("Opponent timed out!");
+
     }, [battleState]);
 
     const timeOut = () => {
@@ -118,10 +132,10 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
             onFinish();
             setTimeUp(true);
         }
+        if (passedAll)setWon(true);
     }, [passedAll, onFinish, timeUp]);
 
     const determineStarterCode = () => {
-        console.log(match.p2Code);
         if (p1 === user && match.p1Code) setCode(match.p1Code);
         else if (p2 === user && match.p2Code) setCode(match.p2Code);
         else setCode(question.starterCode);
@@ -132,17 +146,41 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
         determineStarterCode();
     }, []);
 
+    const openQuitSummary = () => {
+        setShowQuitSummary(true);
+    };
+
+    const closeQuitSummary = () => {
+        setShowQuitSummary(false);
+    };
+
+    const exitToHome = () => {
+        onQuit?.();
+        disconnect();
+        navigate("/");
+    };
+
     return (
         <div className="battlepage">
             <div className="header">
                 <h2>Battle Mode</h2>
-                <button onClick={onQuit}>Quit</button>
+
+                {/* NEW: submission count */}
+                <span className="stat-pill">Submissions: {submissionCount}</span>
+
+                <button onClick={openQuitSummary}>Quit</button>
+
                 <button onClick={handleSubmit} disabled={timeUp}>
                     Submit
                 </button>
 
-                {questionId && Number.isFinite(startedAt) && (
-                    <Timer initialSeconds={600} onComplete={timeOut} startTime={startedAt} />
+                {questionId && (
+                    <Timer
+                        initialSeconds={600}
+                        onComplete={timeOut}
+                        startTime={startedAt}
+                        won={won}
+                    />
                 )}
             </div>
 
@@ -174,6 +212,36 @@ const BattlePage: React.FC<BattlePageProps> = ({ onFinish, onQuit, client, onTim
                     )}
                 </div>
             </SplitPane>
+
+            {showQuitSummary && (
+                <div className="quit-overlay">
+                    <div className="quit-modal">
+                        <h3>Match Stats</h3>
+                        <div className="quit-stats-grid">
+                            <div className="quit-stat">
+                                <span>Your submissions</span>
+                                <strong>{submissionCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>{opponent}'s submissions</span>
+                                <strong>{opponentSubmissionCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>Your latest pass count</span>
+                                <strong>{localPassedCount}</strong>
+                            </div>
+                            <div className="quit-stat">
+                                <span>Elapsed time</span>
+                                <strong>{elapsedDisplay}</strong>
+                            </div>
+                        </div>
+                        <div className="quit-actions">
+                            <button onClick={closeQuitSummary}>Keep Playing</button>
+                            <button onClick={exitToHome} className="danger">Exit to Home</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

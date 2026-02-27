@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hillelgersten.leetcode_battle_backend.dto.SubmissionDto;
 import io.github.hillelgersten.leetcode_battle_backend.model.TestCases;
 import io.github.hillelgersten.leetcode_battle_backend.repository.TestCasesRepository;
+import io.github.hillelgersten.leetcode_battle_backend.service.BattleMatchService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,25 +16,30 @@ import java.util.stream.Collectors;
 public class CodeExecutionService {
 
     private final TestCasesRepository testCasesRepository;
+
+    private final BattleMatchService  battleMatchService;
     private final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
     private final String runnerUrl;
 
-    public CodeExecutionService(TestCasesRepository testCasesRepository) {
+    public CodeExecutionService(TestCasesRepository testCasesRepository, BattleMatchService battleMatchService) {
         this.testCasesRepository = testCasesRepository;
+        this.battleMatchService = battleMatchService;
+
         // Pull runner URL from env, fallback if not provided
         this.runnerUrl = System.getenv().getOrDefault("RUNNER_URL", "http://runner:4000");
     }
 
     public String runSubmission(SubmissionDto submission) {
-        System.out.println(submission.getUserCode());
+        System.out.println("running submission with submit time: " + submission.getTimestamp());
+        System.out.println("fetching test cases");
         // 1. Fetch test cases from DB
         List<TestCases> cases = testCasesRepository.findByQuestionId(submission.getQuestionId());
+        System.out.println("test cases fetched from DB");
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("No test cases found for question " + submission.getQuestionId());
         }
-        System.out.println(cases);
-
+        System.out.println("mapping test cases to JSON");
         // 2. Transform test cases into JSON-ready objects
         List<Map<String, Object>> payload = cases.stream().map(tc -> {
             try {
@@ -45,6 +51,7 @@ public class CodeExecutionService {
             }
         }).collect(Collectors.toList());
 
+        System.out.println("test cases mapped to JSON");
         // 3. Build request payload
         Map<String, Object> request = new HashMap<>();
         request.put("userCode", submission.getUserCode());
@@ -52,7 +59,10 @@ public class CodeExecutionService {
 
         // 4. Call runner service
         try {
+            System.out.println("sending request to runner");
             String result = restTemplate.postForObject(runnerUrl + "/run", request, String.class);
+            int amountPassed = mapper.readTree(result).get("amountPassed").asInt();
+            battleMatchService.setTestCasesCompleted(submission.getUserName(), amountPassed,submission.getTimestamp());
             System.out.println(result);
             return result;
         } catch (Exception e) {

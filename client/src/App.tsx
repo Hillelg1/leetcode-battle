@@ -7,9 +7,10 @@ import Login from "./pages/Login/index";
 import User from "./pages/CreateUser/index";
 import Layout from "./Components/Layout";
 import Admin from "./pages/Admin/index";
+import MatchHistory from "./pages/MatchHistory/index";``
 
 function App() {
-  return (
+    return (
     <Router>
       <Routes>
         <Route element={<Layout />}>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/battle" element={<BattleLoader />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path = "/history" element = {<MatchHistory />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/createUser" element={<User />} />

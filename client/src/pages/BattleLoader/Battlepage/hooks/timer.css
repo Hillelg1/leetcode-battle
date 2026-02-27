@@ -1,3 +1,8 @@
 .tenSeconds{
     color: red;
 }
+
+.won {
+    color: darkgoldenrod;
+    font-weight: bold;
+}
