@@ -15,5 +15,5 @@ export interface MatchesDTO {
   p1EndTime?: number;
   p2EndTime?: number
   p1Solved?: number;
-  p2Sovled?: number;
+  p2Solved?: number;
 }
